@@ -1,8 +1,8 @@
 package pieces;
 
-import util.PieceColor;
+import gui.PieceColor;
 
-public class Bishop extends Piece{
+public class Bishop extends Piece {
 
 	public Bishop(int piecePos, PieceColor pieceColor) {
 		super(piecePos, pieceColor);

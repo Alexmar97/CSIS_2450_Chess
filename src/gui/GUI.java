@@ -22,8 +22,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
-import board.Board;
-import util.MouseControls;
 
 
 public class GUI {
@@ -36,7 +34,7 @@ public class GUI {
 	final Dimension TILE_SIZE = new Dimension(10,10);
 	Color darkTileColor = Color.decode("#593E1A");
 	Color lightTileColor = Color.decode("#FFFACD");
-	String defaultPieceImagesPath = "resources/pixel/";
+	String defaultPieceImagesPath = "resources/pixel";
 	
 	public GUI(Board board){
 		this.gameFrame = new JFrame("Chess");

@@ -1,4 +1,4 @@
-package board;
+package gui;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,10 +12,9 @@ import pieces.Pawn;
 import pieces.Piece;
 import pieces.Queen;
 import pieces.Rook;
-import player.BlackPlayer;
-import player.Player;
-import player.WhitePlayer;
-import util.PieceColor;
+//import player.BlackPlayer;
+//import player.Player;
+//import player.WhitePlayer;
 
 public class Board {
 
@@ -24,8 +23,8 @@ public class Board {
 	Collection<Piece> blackPieces;
 	Map<Integer, Piece> currentBoardLayout = new HashMap<>();
 	
-	WhitePlayer whitePlayer;
-	BlackPlayer blackPlayer;
+//	WhitePlayer whitePlayer;
+//	BlackPlayer blackPlayer;
 	
 	public final static int NUM_TILES = 64;
 	final static int NUM_TILES_ROW = 8;
@@ -56,8 +55,8 @@ public class Board {
 		this.gameBoard = createGameBoard();
 		this.whitePieces = getWhitePieces();
 		this.blackPieces = getBlackPieces();
-		this.whitePlayer = new WhitePlayer();
-		this.blackPlayer = new BlackPlayer();
+//		this.whitePlayer = new WhitePlayer();
+//		this.blackPlayer = new BlackPlayer();
 	}
 
 
@@ -65,13 +64,13 @@ public class Board {
 	 * getters from the board
 	 * @return
 	 */	
-	public Player whitePlayer() {
-		return this.whitePlayer;
-	}
-	
-	public Player blackPlayer() {
-		return this.blackPlayer;
-	}
+//	public Player whitePlayer() {
+//		return this.whitePlayer;
+//	}
+//
+//	public Player blackPlayer() {
+//		return this.blackPlayer;
+//	}
 	
 	public Collection<Piece> getBlackPieces(){
 		return this.blackPieces;

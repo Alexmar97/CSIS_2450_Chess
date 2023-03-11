@@ -1,4 +1,4 @@
-package board;
+package gui;
 
 
 import java.util.HashMap;

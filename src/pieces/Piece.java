@@ -1,6 +1,7 @@
 package pieces;
 
-import util.PieceColor;
+import gui.PieceColor;
+import gui.PieceColor;
 
 public class Piece {
 
