@@ -82,7 +82,7 @@ public class Board {
 	public Tile getTile(int tileCoord) {
 		return gameBoard.get(tileCoord);
 	}
-	
+
 	/**
 	 * creating the array of tiles for the layout of the board
 	 * @return
@@ -93,6 +93,7 @@ public class Board {
 			tiles[i] = Tile.createTile(i, currentBoardLayout.get(i));
 		}
 		return List.of(tiles);
+
 	}
 	
 	
@@ -164,4 +165,7 @@ public class Board {
 	public  boolean isValidCoord(int coord) {
 		return coord >= 0 && coord < NUM_TILES;
 	}
+
+
+
 }

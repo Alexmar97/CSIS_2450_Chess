@@ -1,5 +1,8 @@
 package gui;
 
+import pieces.Pawn;
+import pieces.Piece;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -8,6 +11,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import java.awt.event.MouseEvent;
 
 
 
@@ -34,7 +39,8 @@ public class GUI {
 	final Dimension TILE_SIZE = new Dimension(10,10);
 	Color darkTileColor = Color.decode("#593E1A");
 	Color lightTileColor = Color.decode("#FFFACD");
-	String defaultPieceImagesPath = "resources/pixel";
+	String defaultPieceImagesPath = "resources/pixel/";
+
 	
 	public GUI(Board board){
 		this.gameFrame = new JFrame("Chess");
@@ -61,8 +67,32 @@ public class GUI {
 			}
 			setPreferredSize(FRAME_SIZE);
 			validate();
+
+			//Attempted on getting the piece on each tile
+			//in hopes of eventually using this info to display a different color for
+			//allowed moves - Still in the works
+			addMouseListener(new MouseAdapter() {
+
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					super.mouseClicked(e);
+
+					GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
+					int idVariable = tileCoordinates2.tileId;
+
+					Piece Pawn = new Pawn(0,PieceColor.BLACK);
+					if(board.gameBoard.get(idVariable).getPiece().equals(Pawn))
+					{
+						System.out.println("It's a pawn");
+					}
+
+
+				}
+			});
 		}
-		
+
+
 		public void drawBoard(Board board) {
 			removeAll();
 			for(TilePanel tilePanel : boardTiles) {
@@ -72,6 +102,8 @@ public class GUI {
 			validate();
 			repaint();
 		}
+
+
 	}
 	
 	public JMenuBar createTableMenuBar() {
@@ -126,8 +158,12 @@ public class GUI {
 			assignTilePieceIcon(board);
 			addMouseListener(mc);
 			validate();
+
 		}
-		
+
+
+
+
 		public void drawTile(final Board board) {
 			assignTileColor();
 			assignTilePieceIcon(board);
@@ -167,4 +203,5 @@ public class GUI {
 		}
 		
 	}
+
 }

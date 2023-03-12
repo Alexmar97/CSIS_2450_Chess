@@ -1,21 +1,47 @@
 package gui;
 
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import gui.Board;
 
-import javax.swing.SwingUtilities;
+import javax.swing.*;
+
 
 public class MouseControls implements MouseListener{
 
+	Board board;
+
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		if(SwingUtilities.isRightMouseButton(e)) {
-			System.out.println("right click");
-		}else if(SwingUtilities.isLeftMouseButton(e)) {
-			System.out.println("left click");
-		}
-		
+//	public void mouseClicked(MouseEvent e) {
+//		if(SwingUtilities.isRightMouseButton(e)) {
+//			System.out.println("right click");
+//		}else if(SwingUtilities.isLeftMouseButton(e)) {
+//			System.out.println("left click");
+//		}
+//
+//	}
+
+
+	public void mouseClicked(MouseEvent e)
+	{
+
+//		int tileCoordinates = board.getTile();
+
+		GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
+		System.out.println(tileCoordinates2);
+
+		int idVariable = tileCoordinates2.tileId;
+		System.out.println(idVariable);
+
+//		if(board.gameBoard.get(val) ==)
+
+		System.out.println(board.gameBoard.get(idVariable));
+
 	}
+
+
+
 
 	@Override
 	public void mousePressed(MouseEvent e) {
