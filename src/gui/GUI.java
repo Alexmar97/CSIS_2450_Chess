@@ -9,31 +9,21 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
+import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import java.awt.event.MouseEvent;
-
+import javax.swing.*;
 
 
 public class GUI {
 
 	Board board;
 	JFrame gameFrame;
-	JPanel boardPanel;
+	BoardPanel boardPanel;
 	JMenuBar menu;
 	final Dimension FRAME_SIZE = new Dimension(800,800);
 	final Dimension TILE_SIZE = new Dimension(10,10);
@@ -68,28 +58,38 @@ public class GUI {
 			setPreferredSize(FRAME_SIZE);
 			validate();
 
-			//Attempted on getting the piece on each tile
+
+			//Attempt on getting the piece on each tile
 			//in hopes of eventually using this info to display a different color for
 			//allowed moves - Still in the works
-			addMouseListener(new MouseAdapter() {
-
-				@Override
-				public void mouseClicked(MouseEvent e)
-				{
-					super.mouseClicked(e);
-
-					GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
-					int idVariable = tileCoordinates2.tileId;
-
-					Piece Pawn = new Pawn(0,PieceColor.BLACK);
-					if(board.gameBoard.get(idVariable).getPiece().equals(Pawn))
-					{
-						System.out.println("It's a pawn");
-					}
-
-
-				}
-			});
+//			BoardPanel.super.addMouseListener(new MouseAdapter() {
+//
+//				@Override
+//				public void mouseClicked(MouseEvent e)
+//				{
+//					super.mouseClicked(e);
+//
+//					GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
+//					int idVariable = tileCoordinates2.tileId;
+//
+////					Piece Pawn = new Pawn(0,PieceColor.BLACK);
+////					if(board.gameBoard.get(idVariable).getPiece().equals(Pawn))
+////					{
+////						System.out.println("It's a pawn");
+////					}
+//
+//					if(board.gameBoard.get(idVariable).isTileOccupied())
+//					{
+//						System.out.println("Tile is occupied");
+//					}
+//
+//					else
+//					{
+//						System.out.println("Tile is empty");
+//					}
+//
+//				}
+//			});
 		}
 
 
@@ -103,7 +103,10 @@ public class GUI {
 			repaint();
 		}
 
-
+		public void testingMethods()
+		{
+			System.out.println("TEST");
+		}
 	}
 	
 	public JMenuBar createTableMenuBar() {
@@ -202,6 +205,11 @@ public class GUI {
 			}	
 		}
 		
+	}
+
+	public void addPieceListener(MouseListener pieceListener)
+	{
+		boardPanel.addMouseListener(pieceListener);
 	}
 
 }

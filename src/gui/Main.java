@@ -10,6 +10,8 @@ public class Main {
 		Board board = new Board();
 		GUI gui = new GUI(board);
 
+		Controller controller = new Controller(gui,board);
+
 	}
 
 }

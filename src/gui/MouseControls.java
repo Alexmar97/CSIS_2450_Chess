@@ -36,7 +36,18 @@ public class MouseControls implements MouseListener{
 
 //		if(board.gameBoard.get(val) ==)
 
-		System.out.println(board.gameBoard.get(idVariable));
+	//	System.out.println(board.gameBoard.get(idVariable));
+
+
+//		if(board.gameBoard.get(idVariable).isTileOccupied())
+//		{
+//			System.out.println("Tile is occupied");
+//		}
+//
+//		else
+//		{
+//			System.out.println("Tile is empty");
+//		}
 
 	}
 
