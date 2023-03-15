@@ -2,11 +2,18 @@ package pieces;
 
 import gui.PieceColor;
 
+import java.util.ArrayList;
+
 public class King extends Piece
 {
     int count;
     public King(int piecePos, PieceColor pieceColor) {
         super(piecePos, pieceColor);
+    }
+
+    @Override
+    public ArrayList<Integer> allowedMoves(int currentPos, int endPos) {
+        return null;
     }
 
     @Override

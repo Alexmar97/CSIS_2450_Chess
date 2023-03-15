@@ -1,12 +1,16 @@
 package pieces;
 
 import gui.PieceColor;
-import gui.PieceColor;
+import gui.Tile;
 
-public class Piece {
+import java.util.ArrayList;
+
+public abstract class Piece {
 
 	int piecePos;
 	PieceColor pieceColor;
+
+
 	
 	public Piece(int piecePos, PieceColor pieceColor) {
 		this.piecePos = piecePos;
@@ -20,4 +24,8 @@ public class Piece {
 	public PieceColor getPieceColor() {
 		return this.pieceColor;
 	}
+
+
+	 public abstract ArrayList<Integer> allowedMoves(int currentPos, int endPos);
+
 }

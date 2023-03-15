@@ -2,6 +2,12 @@ package gui;
 
 import pieces.Piece;
 
+
+//Alex you still need to find a way to tell if a tile is ocupied or not
+// I do not see anywhere where we are indicating when the tiles are occupied when
+//creating the pieces in the default layout in Board
+
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -26,15 +32,25 @@ public class Controller {
             GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
             int idVariable = tileCoordinates2.tileId;
 
-            if(board.gameBoard.get(idVariable).isTileOccupied())
+//            if(board.gameBoard.get(idVariable).isTileOccupied())
+//            {
+//                System.out.println("Tile is occupied");
+//            }
+//
+//            else
+//            {
+//                System.out.println("Tile is empty");
+//                board.getTile(idVariable).isTileOccupied()
+//            }
+
+            if(board.getTile(idVariable).isTileOccupied())
             {
                 System.out.println("Tile is occupied");
             }
 
-            else
-            {
-                System.out.println("Tile is empty");
-            }
+            else System.out.println("Tile is empty");
+
+
         }
 
         @Override

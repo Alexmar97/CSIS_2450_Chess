@@ -10,7 +10,9 @@ import javax.swing.*;
 
 public class MouseControls implements MouseListener{
 
-	Board board;
+	//Board board;
+
+	public int idVariable;
 
 	@Override
 //	public void mouseClicked(MouseEvent e) {
@@ -31,7 +33,7 @@ public class MouseControls implements MouseListener{
 		GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
 		System.out.println(tileCoordinates2);
 
-		int idVariable = tileCoordinates2.tileId;
+		idVariable = tileCoordinates2.tileId;
 		System.out.println(idVariable);
 
 //		if(board.gameBoard.get(val) ==)
@@ -48,6 +50,16 @@ public class MouseControls implements MouseListener{
 //		{
 //			System.out.println("Tile is empty");
 //		}
+
+
+		//Had to make the board instance in GUI static for this to work
+		if(GUI.board.getTile(idVariable).isTileOccupied())
+		{
+			System.out.println("Tile is occupied");
+		}
+
+		else System.out.println("Tile is empty");
+
 
 	}
 

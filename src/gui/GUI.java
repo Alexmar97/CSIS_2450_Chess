@@ -21,7 +21,7 @@ import javax.swing.*;
 
 public class GUI {
 
-	Board board;
+	public static Board board;
 	JFrame gameFrame;
 	BoardPanel boardPanel;
 	JMenuBar menu;
@@ -57,6 +57,7 @@ public class GUI {
 			}
 			setPreferredSize(FRAME_SIZE);
 			validate();
+
 
 
 			//Attempt on getting the piece on each tile
