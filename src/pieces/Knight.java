@@ -66,7 +66,8 @@ public class Knight extends Piece{
 		}
 		return moves;
 	}
-	
+
+
 	/*
 	 * checks to see if is in first column and move offsets that we can not move to 
 	 */

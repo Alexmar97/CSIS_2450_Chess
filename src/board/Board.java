@@ -167,6 +167,8 @@ public class Board {
 		setPiece(new Knight(36, PieceColor.BLACK));
 		setPiece(new Bishop(47, PieceColor.BLACK));
 		setPiece(new Pawn(10, PieceColor.BLACK));
+		setPiece(new King(26,PieceColor.BLACK));
+		setPiece(new Queen(21,PieceColor.BLACK));
 	}
 	
 	/*

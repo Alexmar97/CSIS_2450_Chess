@@ -48,6 +48,7 @@ public class GUI {
 	Color darkTileColor = Color.decode("#593E1A");
 	Color lightTileColor = Color.decode("#FFFACD");
 	String defaultPieceImagesPath = "resources/pixel/";
+	String alexDefaultPieceImagesPath = "C:\\Users\\alexm\\eclipse-workspace\\CSIS_2450_Chess\\src\\resources\\pixel\\";
 	
 	//variables that we use when interacted with the board
 	public Tile sourceTile;
@@ -200,6 +201,12 @@ public class GUI {
 								boardPanel.drawBoard(board);
 							}
 						});
+
+						GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
+						System.out.println(tileCoordinates2);
+
+						int idVariable = tileCoordinates2.tileId;
+						System.out.println(idVariable);
 					}
 					
 				}
@@ -252,9 +259,14 @@ public class GUI {
 			this.removeAll();
 			if(board.getTile(this.tileId).isTileOccupied()) {
 				try {
-					Image image = ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).getPiece()
-							.getPieceColor().toString().substring(0,1)
-							+ board.getTile(this.tileId).getPiece().toString() + ".gif"));
+//					Image image = ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).getPiece()
+//							.getPieceColor().toString().substring(0,1)
+//							+ board.getTile(this.tileId).getPiece().toString() + ".gif"));
+					//Image image = ImageIO.read(new File("resources.pixel/BB.gif"));
+
+					Image image = ImageIO.read(new File(alexDefaultPieceImagesPath + board.getTile(this.tileId).getPiece()
+							.getPieceColor().toString().substring(0,1) + board.getTile(this.tileId).getPiece().toString() + ".gif"));
+
 					image = image.getScaledInstance(80, 80, image.SCALE_DEFAULT);
 					add(new JLabel(new ImageIcon(image)));
 				} catch (IOException e) {
@@ -271,7 +283,9 @@ public class GUI {
 			for(Move move : pieceLegalMoves(board)) {
 				if(move.getDestinationCoordinate() == this.tileId) {
 					try {
-						add(new JLabel(new ImageIcon(ImageIO.read(new File("resources/pixel/green.gif")))));
+//						add(new JLabel(new ImageIcon(ImageIO.read(new File("resources/pixel/green.gif")))));
+//						System.out.println("green");
+						add(new JLabel(new ImageIcon(ImageIO.read(new File("C:\\Users\\alexm\\eclipse-workspace\\CSIS_2450_Chess\\src\\resources\\pixel\\green.gif")))));
 						System.out.println("green");
 					}catch(Exception e) {
 						e.printStackTrace();
@@ -279,6 +293,7 @@ public class GUI {
 				}
 			}
 		}
+
 		
 		/*
 		 * grabs the selected boards legal moves
@@ -289,6 +304,8 @@ public class GUI {
 			}
 			return Collections.emptyList();
 		}
+
+
 		
 		/*
 		 * runs through each tile id and assigns it with a color to draw the tile panel
