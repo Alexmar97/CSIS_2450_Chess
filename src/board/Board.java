@@ -1,5 +1,6 @@
 package board;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +21,7 @@ import util.PieceColor;
 public class Board {
 
 	//the list of tiles the board is constructed of
-	List<Tile> gameBoard;
+	public List<Tile> gameBoard;
 	
 	//TODO collection of each pieces currently not being used
 	Collection<Piece> whitePieces;
@@ -68,6 +69,12 @@ public class Board {
 		this.blackPieces = getBlackPieces();
 		this.whitePlayer = new WhitePlayer();
 		this.blackPlayer = new BlackPlayer();
+	}
+	public Board(BlackPlayer blackPlayer) {
+		this.blackPlayer = blackPlayer;
+		this.whitePieces = getWhitePieces();
+		this.blackPieces = getBlackPieces();
+		this.whitePlayer = new WhitePlayer();
 	}
 
 
@@ -167,8 +174,6 @@ public class Board {
 		setPiece(new Knight(36, PieceColor.BLACK));
 		setPiece(new Bishop(47, PieceColor.BLACK));
 		setPiece(new Pawn(10, PieceColor.BLACK));
-		setPiece(new King(26,PieceColor.BLACK));
-		setPiece(new Queen(21,PieceColor.BLACK));
 	}
 	
 	/*
@@ -200,5 +205,19 @@ public class Board {
 	 */
 	public  boolean isValidCoord(int coord) {
 		return coord >= 0 && coord < NUM_TILES;
+	}
+	
+	/*
+	 * get all active pieces
+	 */
+	public static Collection<Piece> getActivePieces(List<Tile> gameBoard){
+		List<Piece> activePieces = new ArrayList<>();
+		for(Tile tile : gameBoard) {
+			if(tile.isTileOccupied()) {
+				Piece piece = tile.getPiece();
+				activePieces.add(piece);
+			}
+		}
+		return activePieces;
 	}
 }
