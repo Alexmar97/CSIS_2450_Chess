@@ -6,6 +6,8 @@ import java.util.List;
 
 import board.Board;
 import board.Move;
+import board.Move.AttackMove;
+import board.Move.NormalMove;
 import util.PieceColor;
 
 /*
@@ -16,20 +18,19 @@ public class King extends Piece{
 	public King(int piecePos, PieceColor pieceColor) {
 		super(piecePos, pieceColor, true);
 	}
-
-
+	public King(int piecePos, PieceColor pieceColor, boolean isFirstMove) {
+		super(piecePos, pieceColor, isFirstMove);
+	}
+	
 	final int[] MOVE_CANDIDATE_DIRECTION = {-9, -8, -7, -1, 1, 7, 8,9};
-	//final int[] MOVE_CANDIDATE_DIRECTION = {-1,1};
-
-
+	
 	/*
 	 * Method that calculates the moves possible by this piece
 	 * needs the board being used to be passed in
 	 * returns a collection of move objects
 	 */
 	@Override
-	public Collection<Move> calculateMoves(Board board)
-	{
+	public Collection<Move> calculateMoves(Board board) {
 		//List that will contain all possible moves
 		List<Move> moves = new ArrayList<>();
 
@@ -55,7 +56,7 @@ public class King extends Piece{
 				//if the coordinate that we're checking is empty, then we add this to the list of possible moves
 				if (!board.getTile(coordinateToCheck).isTileOccupied())
 				{
-					moves.add(new Move(board, coordinateToCheck));
+					moves.add(new NormalMove(board, this, coordinateToCheck));
 					counter = 1;
 				}
 
@@ -67,7 +68,7 @@ public class King extends Piece{
 
 					if(this.pieceColor != otherPiece.getPieceColor())
 					{
-						moves.add(new Move(board, coordinateToCheck));
+						moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 					}
 					break;
 				}
@@ -82,21 +83,19 @@ public class King extends Piece{
 		return moves;
 	}
 
-		/*
+	/*
 	 * going to be used to move the piece
 	 */
 	@Override
 	public Piece movePiece(Move move) {
-		// TODO Auto-generated method stub
-		return null;
+		return new King(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor(), false);
 	}
 	
 	@Override
 	public String toString() {
 		return "K";
 	}
-
-
+	
 	public boolean firstColumnEdgeCheck(int piecePos, int candidateOffset)
 	{
 		return Board.FIRST_COLUMN[piecePos] && (candidateOffset == 1 || candidateOffset == -1 || candidateOffset == -8 || candidateOffset == 8 );

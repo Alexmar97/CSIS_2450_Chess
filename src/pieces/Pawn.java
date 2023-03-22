@@ -6,6 +6,8 @@ import java.util.List;
 
 import board.Board;
 import board.Move;
+import board.Move.AttackMove;
+import board.Move.NormalMove;
 import util.PieceColor;
 
 /*
@@ -51,7 +53,7 @@ public class Pawn extends Piece{
 			
 			//checking for one spot in front is open
 			if(currentMoveCandidate == 8 && !board.getTile(coordinateToCheck).isTileOccupied()) {
-				moves.add(new Move(board, coordinateToCheck));
+				moves.add(new NormalMove(board, this, coordinateToCheck));
 			}//checking if two spots ahead is open and is first move and in their starting positions
 			else if((currentMoveCandidate == 16 && this.isFirstMove()) &&
 					(board.SEVENTH_RANK[this.piecePos] && this.getPieceColor().isBlack() ||
@@ -60,7 +62,7 @@ public class Pawn extends Piece{
 				int skippedTile = this.piecePos + (8 * this.getPieceColor().getDirection());
 				
 				if(!board.getTile(skippedTile).isTileOccupied() && !board.getTile(coordinateToCheck).isTileOccupied()) {
-					moves.add(new Move(board, coordinateToCheck));
+					moves.add(new NormalMove(board, this, coordinateToCheck));
 				}
 			}//checking for attack the 7 offset attack position
 			else if((currentMoveCandidate == 7 )&& 
@@ -71,7 +73,7 @@ public class Pawn extends Piece{
 				Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
 				
 				if(this.getPieceColor() != otherPiece.getPieceColor()) {
-					//moves.add(ANewMoveObject);
+					moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 				}
 			}//checking for attack on the 9 offset position
 			else if(currentMoveCandidate == 9 &&
@@ -82,7 +84,7 @@ public class Pawn extends Piece{
 				Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
 				
 				if(this.getPieceColor() != otherPiece.getPieceColor()) {
-					moves.add(new Move(board, coordinateToCheck));
+					moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 				}
 			}
 			
@@ -95,8 +97,7 @@ public class Pawn extends Piece{
 	 */
 	@Override
 	public Piece movePiece(Move move) {
-		//will return a new piece of this type with the move varibales
-		return null;
+		return new Pawn(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor(), false);
 	}
 	
 	@Override

@@ -6,6 +6,8 @@ import java.util.List;
 
 import board.Board;
 import board.Move;
+import board.Move.AttackMove;
+import board.Move.NormalMove;
 import util.PieceColor;
 
 
@@ -13,6 +15,7 @@ import util.PieceColor;
  * class to represent the bishop to create a new bishop piece
  */
 public class Bishop extends Piece{
+	
 
 	//constructor that assumes first move is true
 	public Bishop(int piecePos, PieceColor pieceColor) {
@@ -39,6 +42,7 @@ public class Bishop extends Piece{
 		//creates an empty list for moves to be added to
 		List<Move> moves = new ArrayList<>();
 		
+		
 		//loops through the possible move integers
 		for(int currentMoveCandidate : MOVE_CANDIDATE_DIRECTION) {
 			
@@ -62,13 +66,13 @@ public class Bishop extends Piece{
 				
 				//if tile is not occupied add it as a move
 				if(!board.getTile(coordinateToCheck).isTileOccupied()) {
-					moves.add(new Move(board, coordinateToCheck));
+					moves.add(new NormalMove(board, this, coordinateToCheck));
 					
 				//if tile is occupied  and the other piece is the other teams add the attack move
 				}else if(board.getTile(coordinateToCheck).isTileOccupied()) {
 					Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
 					if(this.pieceColor != otherPiece.getPieceColor()) {
-						//moves.add(attackMove);
+						moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 					}
 					break;
 				}
@@ -98,8 +102,7 @@ public class Bishop extends Piece{
 	 */
 	@Override
 	public Piece movePiece(Move move) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Bishop(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor(), false);
 	}
 
 	@Override

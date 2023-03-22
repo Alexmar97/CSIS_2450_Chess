@@ -6,6 +6,8 @@ import java.util.List;
 
 import board.Board;
 import board.Move;
+import board.Move.AttackMove;
+import board.Move.NormalMove;
 import util.PieceColor;
 
 /*
@@ -25,6 +27,7 @@ public class Knight extends Piece{
 	
 	//the set of integers that piece can move 
 	final int[] MOVE_CANDIDATES = {-17, -15, -10, -6, 6, 10, 15, 17};
+	
 
 	
 	/*
@@ -47,27 +50,26 @@ public class Knight extends Piece{
 					secondColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
 					seventhColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
 					eigthColumnEdgeCheck(this.piecePos, currentMoveCandidate)) {
-					break;
+					continue;
 				}
 				
 				//if no piece is on it add to non attack moves
 				if(!board.getTile(coordinateToCheck).isTileOccupied()) {
-					moves.add(new Move(board, coordinateToCheck));
+					moves.add(new NormalMove(board, this, coordinateToCheck));
 				}
 				//if their is a piece on coordinate;
 				else if(board.getTile(coordinateToCheck).isTileOccupied()) {
 					Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
 					
 					if(otherPiece.getPieceColor() != this.pieceColor) {
-						//move.add(aNewAttackMoveObject);
+						moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 					}
 				}
 			}
 		}
 		return moves;
 	}
-
-
+	
 	/*
 	 * checks to see if is in first column and move offsets that we can not move to 
 	 */
@@ -80,7 +82,6 @@ public class Knight extends Piece{
 	 * checks to see if is in second column and move offsets that we can not move to 
 	 */
 	public boolean secondColumnEdgeCheck(int currentPos, int candidateOffset) {
-		System.out.println(candidateOffset);
 		return Board.SECOND_COLUMN[currentPos] && (candidateOffset == 6 || candidateOffset == -10);
 	}
 	
@@ -104,8 +105,7 @@ public class Knight extends Piece{
 	 */
 	@Override
 	public Piece movePiece(Move move) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Knight(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor(), false);
 	}
 	
 	@Override

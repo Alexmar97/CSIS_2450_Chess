@@ -50,6 +50,6 @@ public abstract class Piece {
 	
 	//abstract methods for calculating mvoes and moving piece
 	public abstract Collection<Move> calculateMoves(Board board);
-
-	public abstract Piece movePiece(Move move);
+	//public abstract Collection<Move> getAttackMoves(Board board);
+ 	public abstract Piece movePiece(Move move);
 }
