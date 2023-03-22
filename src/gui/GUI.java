@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,6 +28,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 
 import board.Board;
 import board.Move;
@@ -45,7 +48,7 @@ public class GUI {
 	
 	//Variables used when making the visuals
 	final Dimension FRAME_SIZE = new Dimension(800,800);
-	final Dimension TILE_SIZE = new Dimension(10,10);
+	final Dimension TILE_SIZE = new Dimension(100,100);
 	Color darkTileColor = Color.decode("#593E1A");
 	Color lightTileColor = Color.decode("#FFFACD");
 	String defaultPieceImagesPath = "resources/pixel/";
@@ -55,7 +58,6 @@ public class GUI {
 	public Tile destinationTile;
 	public Piece selectedPiece;
 	
-	public PieceColor turn = PieceColor.BLACK;
 	
 	/*
 	 * constructor creating the frame and adding the components
@@ -179,6 +181,9 @@ public class GUI {
 			//calls and adds the tiles color and piece icon
 			assignTileColor();
 			assignTilePieceIcon(board);
+			Border blackline = BorderFactory.createLineBorder(Color.black,2);
+			this.setBorder(blackline);
+			
 			
 			//TODO The whole mouse listener as an inner class I was struggling to get it to work as a seperate class
 			addMouseListener(new MouseListener() {
@@ -199,7 +204,7 @@ public class GUI {
 							//sets selected piece as the piece on that tile
 							selectedPiece = sourceTile.getPiece();
 							
-							if(selectedPiece == null || selectedPiece.getPieceColor() != turn) {
+							if(selectedPiece == null || selectedPiece.getPieceColor() != board.getCurrentPlayer()) {
 								sourceTile = null;
 								selectedPiece = null;
 								System.out.println("No piece selected");
@@ -210,10 +215,7 @@ public class GUI {
 							if(destinationTile != null) {
 								for(Move move : pieceLegalMoves(board)) {
 									if(destinationTile.getTileCoord() == move.getDestinationCoordinate()) {
-										System.out.println("move piece");
-										System.out.println(board.getActivePieces(board.gameBoard));
-										board = move.makeMove(board, selectedPiece, destinationTile.getTileCoord());
-										System.out.println(board.getActivePieces(board.gameBoard));
+										board = move.makeMove(board, selectedPiece, destinationTile.getTileCoord(), destinationTile.getPiece());
 										destinationTile = null;
 										sourceTile = null; 
 										selectedPiece = null;
@@ -307,10 +309,10 @@ public class GUI {
 		public void highlightLegals(Board board) {
 			for(Move move : pieceLegalMoves(board)) {
 				if(move.getDestinationCoordinate() == this.tileId) {
-					try {
-						add(new JLabel(new ImageIcon(ImageIO.read(new File("resources/pixel/green.gif")))));
-					}catch(Exception e) {
-						e.printStackTrace();
+					if(move.getClass() == Move.NormalMove.class) {
+						this.setBackground(new Color(78,237,86,100));
+					}else if(move.getClass() == Move.AttackMove.class) {
+						this.setBackground(new Color(237,78,78,100));
 					}
 				}
 			}
@@ -325,6 +327,7 @@ public class GUI {
 			}
 			return Collections.emptyList();
 		}
+		
 		
 		/*
 		 * runs through each tile id and assigns it with a color to draw the tile panel
