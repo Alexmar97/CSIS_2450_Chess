@@ -31,6 +31,7 @@ import board.Board;
 import board.Move;
 import board.Tile;
 import pieces.Piece;
+import util.PieceColor;
 
 /*
  * The Gui class is the main interactivity of the game and is what is interacted with
@@ -48,12 +49,13 @@ public class GUI {
 	Color darkTileColor = Color.decode("#593E1A");
 	Color lightTileColor = Color.decode("#FFFACD");
 	String defaultPieceImagesPath = "resources/pixel/";
-	String alexDefaultPieceImagesPath = "C:\\Users\\alexm\\eclipse-workspace\\CSIS_2450_Chess\\src\\resources\\pixel\\";
 	
 	//variables that we use when interacted with the board
 	public Tile sourceTile;
 	public Tile destinationTile;
 	public Piece selectedPiece;
+	
+	public PieceColor turn = PieceColor.BLACK;
 	
 	/*
 	 * constructor creating the frame and adding the components
@@ -186,29 +188,57 @@ public class GUI {
 					//if right is clicked
 					if(SwingUtilities.isRightMouseButton(e)) {
 						System.out.println("Right click");
+						sourceTile = null;
+						selectedPiece = null;
+						destinationTile = null;
 					//if left is clicked
 					}else if(SwingUtilities.isLeftMouseButton(e)) {
-						//sets sourceTile as the tile id clicked on
-						sourceTile = board.getTile(tileId);
-						//sets selected piece as the piece on that tile
-						selectedPiece = board.getTile(tileId).getPiece();
-						
-						
-						// redraws board when clicked on
-						SwingUtilities.invokeLater(new Runnable(){
-							@Override
-							public void run() {
-								boardPanel.drawBoard(board);
+						if(sourceTile == null) {
+							//sets sourceTile as the tile id clicked on
+							sourceTile = board.getTile(tileId);
+							//sets selected piece as the piece on that tile
+							selectedPiece = sourceTile.getPiece();
+							
+							if(selectedPiece == null || selectedPiece.getPieceColor() != turn) {
+								sourceTile = null;
+								selectedPiece = null;
+								System.out.println("No piece selected");
 							}
-						});
-
-						GUI.TilePanel tileCoordinates2 = (GUI.TilePanel) e.getComponent();
-						System.out.println(tileCoordinates2);
-
-						int idVariable = tileCoordinates2.tileId;
-						System.out.println(idVariable);
+						}else {
+							destinationTile = board.getTile(tileId);
+							
+							if(destinationTile != null) {
+								for(Move move : pieceLegalMoves(board)) {
+									if(destinationTile.getTileCoord() == move.getDestinationCoordinate()) {
+										System.out.println("move piece");
+										System.out.println(board.getActivePieces(board.gameBoard));
+										board = move.makeMove(board, selectedPiece, destinationTile.getTileCoord());
+										System.out.println(board.getActivePieces(board.gameBoard));
+										destinationTile = null;
+										sourceTile = null; 
+										selectedPiece = null;
+										break;
+									}
+								}
+							}
+							if(destinationTile != null) {
+								if(destinationTile.getPiece() == null) {
+									System.out.println("cant move here");
+								}else if(destinationTile.getPiece().getPieceColor() == sourceTile.getPiece().getPieceColor()) {
+									sourceTile = destinationTile;
+									selectedPiece = sourceTile.getPiece();
+									destinationTile = null;
+								}
+							}
+						}
 					}
-					
+					// redraws board when clicked on
+					SwingUtilities.invokeLater(new Runnable(){
+						@Override
+						public void run() {
+							boardPanel.drawBoard(board);
+						}
+					});	
 				}
 
 				@Override
@@ -259,14 +289,9 @@ public class GUI {
 			this.removeAll();
 			if(board.getTile(this.tileId).isTileOccupied()) {
 				try {
-//					Image image = ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).getPiece()
-//							.getPieceColor().toString().substring(0,1)
-//							+ board.getTile(this.tileId).getPiece().toString() + ".gif"));
-					//Image image = ImageIO.read(new File("resources.pixel/BB.gif"));
-
-					Image image = ImageIO.read(new File(alexDefaultPieceImagesPath + board.getTile(this.tileId).getPiece()
-							.getPieceColor().toString().substring(0,1) + board.getTile(this.tileId).getPiece().toString() + ".gif"));
-
+					Image image = ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).getPiece()
+							.getPieceColor().toString().substring(0,1)
+							+ board.getTile(this.tileId).getPiece().toString() + ".gif"));
 					image = image.getScaledInstance(80, 80, image.SCALE_DEFAULT);
 					add(new JLabel(new ImageIcon(image)));
 				} catch (IOException e) {
@@ -283,17 +308,13 @@ public class GUI {
 			for(Move move : pieceLegalMoves(board)) {
 				if(move.getDestinationCoordinate() == this.tileId) {
 					try {
-//						add(new JLabel(new ImageIcon(ImageIO.read(new File("resources/pixel/green.gif")))));
-//						System.out.println("green");
-						add(new JLabel(new ImageIcon(ImageIO.read(new File("C:\\Users\\alexm\\eclipse-workspace\\CSIS_2450_Chess\\src\\resources\\pixel\\green.gif")))));
-						System.out.println("green");
+						add(new JLabel(new ImageIcon(ImageIO.read(new File("resources/pixel/green.gif")))));
 					}catch(Exception e) {
 						e.printStackTrace();
 					}
 				}
 			}
 		}
-
 		
 		/*
 		 * grabs the selected boards legal moves
@@ -304,8 +325,6 @@ public class GUI {
 			}
 			return Collections.emptyList();
 		}
-
-
 		
 		/*
 		 * runs through each tile id and assigns it with a color to draw the tile panel
