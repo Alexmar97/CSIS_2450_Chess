@@ -34,6 +34,8 @@ public class Board {
 	WhitePlayer whitePlayer;
 	BlackPlayer blackPlayer;
 	
+	PieceColor currentPlayer = PieceColor.WHITE;
+	
 	public final static int NUM_TILES = 64;
 	final static int NUM_TILES_ROW = 8;
 	
@@ -62,16 +64,16 @@ public class Board {
 	 * to get the full board
 	 */
 	public Board() {
-		//createDefaultLayout();
-		createMoveExampleBoard();
+		createDefaultLayout();
+		//createMoveExampleBoard();
 		this.gameBoard = createGameBoard();
 		this.whitePieces = getWhitePieces();
 		this.blackPieces = getBlackPieces();
 		this.whitePlayer = new WhitePlayer();
 		this.blackPlayer = new BlackPlayer();
 	}
-	public Board(BlackPlayer blackPlayer) {
-		this.blackPlayer = blackPlayer;
+	public Board(PieceColor currentPlayer) {
+		this.currentPlayer = currentPlayer;
 		this.whitePieces = getWhitePieces();
 		this.blackPieces = getBlackPieces();
 		this.whitePlayer = new WhitePlayer();
@@ -99,6 +101,9 @@ public class Board {
 	}
 	public Tile getTile(int tileCoord) {
 		return gameBoard.get(tileCoord);
+	}
+	public PieceColor getCurrentPlayer() {
+		return this.currentPlayer;
 	}
 	
 	/**
@@ -172,8 +177,13 @@ public class Board {
 		setPiece(new Pawn(49, PieceColor.WHITE));
 		setPiece(new Pawn(34, PieceColor.WHITE));
 		setPiece(new Knight(36, PieceColor.BLACK));
+		setPiece(new Knight(40, PieceColor.BLACK));
 		setPiece(new Bishop(47, PieceColor.BLACK));
 		setPiece(new Pawn(10, PieceColor.BLACK));
+		setPiece(new King(33, PieceColor.BLACK));
+		setPiece(new Queen(54, PieceColor.BLACK));
+		setPiece(new Rook(63, PieceColor.BLACK));
+		setPiece(new Pawn(15, PieceColor.BLACK));
 	}
 	
 	/*
