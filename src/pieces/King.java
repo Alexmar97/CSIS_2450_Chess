@@ -67,12 +67,12 @@ public class King extends Piece{
 
 					if(this.pieceColor != otherPiece.getPieceColor())
 					{
-						//moves.add(attackMove);
+						moves.add(new Move(board, coordinateToCheck));
 					}
 					break;
 				}
 
-				System.out.println(coordinateToCheck);
+				//System.out.println(coordinateToCheck);
 
 				//adds to the next move to check
 				coordinateToCheck += currentMoveCandidate;
