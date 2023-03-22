@@ -1,24 +1,46 @@
 package board;
 
 import pieces.Piece;
+import util.PieceColor;
 
 /*
  * This class is what we will call to get a certain move
  * and is constructed when a legal move is created
  */
-public class Move {
+public abstract class Move {
 
-	int destinationCoordinate;
 	Board board;
 	Piece movedPiece;
+	Piece attackedPiece;
+	int destinationCoordinate;
+	boolean isFirstMove;
 	
 	/*
 	 * the constructor needs the board that this move is using
 	 * and the destination coordinate of this being made
 	 */
 	public Move(Board board, int destinationCoordinate) {
-		this.destinationCoordinate = destinationCoordinate;
 		this.board = board;
+		this.destinationCoordinate = destinationCoordinate;
+		this.movedPiece = null;
+		this.attackedPiece = null;
+		this.isFirstMove = false;
+	}
+	
+	public Move(Board board, Piece movedPiece, int destinationCoordinate) {
+		this.board = board;
+		this.movedPiece = movedPiece;
+		this.attackedPiece = null;
+		this.destinationCoordinate = destinationCoordinate;
+		this.isFirstMove = movedPiece.isFirstMove();
+	}
+	
+	public Move(Board board, Piece movedPiece, int destinationCoordinate, Piece attackedPiece) {
+		this.board = board;
+		this.movedPiece = movedPiece;
+		this.attackedPiece = attackedPiece;
+		this.destinationCoordinate = destinationCoordinate;
+		this.isFirstMove = movedPiece.isFirstMove();
 	}
 	
 	
@@ -34,25 +56,33 @@ public class Move {
 	public Piece getMovedPiece() {
 		return this.movedPiece;
 	}
+	public Piece getAttackedPiece() {
+		return this.attackedPiece;
+	}
 	
-	public Board makeMove(Board board, Piece movedPiece, int destinationCoordinate) {
-		this.movedPiece = movedPiece;
-		Board newBoard = new Board(board.blackPlayer);
+	public Board makeMove(Board board, Piece movedPiece, int destinationCoordinate, Piece attackedPiece) {
+		Board newBoard;
+		if(movedPiece.getPieceColor() == PieceColor.WHITE) {
+			newBoard = new Board(PieceColor.BLACK);
+		}else {
+			newBoard = new Board(PieceColor.WHITE);
+		}
 		for(Piece piece : board.getActivePieces(board.gameBoard)) {
 			if(!this.movedPiece.equals(piece)) {
 				newBoard.setPiece(piece);
 			}
 		}
 		newBoard.setPiece(movedPiece.movePiece(this));
+		//set attacked piece in grave yard
 		newBoard.gameBoard = newBoard.createGameBoard();
 		return newBoard;
 	}
 	
 	
-	public class NormalMove extends Move{
+	public static class NormalMove extends Move{
 
-		public NormalMove(Board board, int destinationCoordinate) {
-			super(board, destinationCoordinate);
+		public NormalMove(Board board, Piece movedPiece, int destinationCoordinate) {
+			super(board, movedPiece, destinationCoordinate);
 		}
 		
 		/*
@@ -72,10 +102,10 @@ public class Move {
 		}
 	}
 	
-	public class AttackMove extends Move{
+	public static class AttackMove extends Move{
 
-		public AttackMove(Board board, int destinationCoordinate) {
-			super(board, destinationCoordinate);
+		public AttackMove(Board board, Piece movedPiece, int destinationCoordinate, Piece attackedPiece) {
+			super(board, movedPiece, destinationCoordinate, attackedPiece);
 		}
 		
 		/*
@@ -122,5 +152,6 @@ public class Move {
 				getMovedPiece().equals(otherMove.getMovedPiece());
 	}
 	*/
+	
 
 }
