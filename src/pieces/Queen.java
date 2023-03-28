@@ -22,7 +22,7 @@ public class Queen extends Piece{
 	public Queen(int piecePos, PieceColor pieceColor, boolean isFirstMove) {
 		super(piecePos, pieceColor, isFirstMove);
 	}
-	
+
 	final int[] MOVE_CANDIDATE_DIRECTION = {-9, -8, -7, -1, 1, 7, 8, 9};
 
 	/*
@@ -46,7 +46,7 @@ public class Queen extends Piece{
 					while(board.isValidCoord(coordinateToCheck))
 					{
 						//checks to see if piece is on the edge and breaks out if so
-						if(firstColumnEdgeCheck(this.piecePos,currentMoveCandidate) || 
+						if(firstColumnEdgeCheck(this.piecePos,currentMoveCandidate) ||
 								eigthColumnEdgeCheck(this.piecePos, currentMoveCandidate)) {
 							break;
 						}
@@ -77,17 +77,18 @@ public class Queen extends Piece{
 							break;
 						}
 
-						System.out.println(coordinateToCheck);
+				//System.out.println(coordinateToCheck);
 
-						//adds to the next move to check
-						//{+1 +1 +1 +1 ....}
-						//{+8 +8 +8 +8...}
-						coordinateToCheck += currentMoveCandidate;
-					}
+				//adds to the next move to check
+				//{+1 +1 +1 +1 ....}
+				//{+8 +8 +8 +8...}
+				coordinateToCheck += currentMoveCandidate;
+			}
 
 
-				}
-				return moves;
+		}
+		return moves;
+
 	}
 
 	/*
@@ -102,7 +103,7 @@ public class Queen extends Piece{
 	public String toString() {
 		return "Q";
 	}
-	
+
 	public boolean firstColumnEdgeCheck(int piecePos, int candidateOffset)
 	{
 		return Board.FIRST_COLUMN[piecePos] && (candidateOffset == -9 || candidateOffset == -1 || candidateOffset == 7);

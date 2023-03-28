@@ -79,15 +79,15 @@ public class Rook extends Piece{
 
 						System.out.println(coordinateToCheck);
 
-						//adds to the next move to check
-						//{+1 +1 +1 +1 ....}
-						//{+8 +8 +8 +8...}
-						coordinateToCheck += currentMoveCandidate;
-					}
+				//adds to the next move to check
+				//{+1 +1 +1 +1 ....}
+				//{+8 +8 +8 +8...}
+				coordinateToCheck += currentMoveCandidate;
+			}
 
 
-				}
-				return moves;
+		}
+		return moves;
 	}
 
 	/*
@@ -102,7 +102,8 @@ public class Rook extends Piece{
 	public String toString() {
 		return "R";
 	}
-	
+
+
 	public boolean firstColumnEdgeCheck(int piecePos, int candidateOffset)
 	{
 		return Board.FIRST_COLUMN[piecePos] && (candidateOffset == -1);
@@ -117,4 +118,5 @@ public class Rook extends Piece{
 	{
 		return Board.EIGTH_COLUMN[piecePos] && (candidateOffset == 1);
 	}
+
 }

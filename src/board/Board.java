@@ -64,8 +64,8 @@ public class Board {
 	 * to get the full board
 	 */
 	public Board() {
-		createDefaultLayout();
-		//createMoveExampleBoard();
+		//createDefaultLayout();
+		createMoveExampleBoard();
 		this.gameBoard = createGameBoard();
 		this.whitePieces = getWhitePieces();
 		this.blackPieces = getBlackPieces();

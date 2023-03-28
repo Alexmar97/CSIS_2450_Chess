@@ -8,6 +8,8 @@ import board.Board;
 import board.Move;
 import board.Move.AttackMove;
 import board.Move.NormalMove;
+import board.Move.AttackMove;
+import board.Move.NormalMove;
 import util.PieceColor;
 
 
@@ -15,7 +17,7 @@ import util.PieceColor;
  * class to represent the bishop to create a new bishop piece
  */
 public class Bishop extends Piece{
-	
+
 
 	//constructor that assumes first move is true
 	public Bishop(int piecePos, PieceColor pieceColor) {
@@ -42,7 +44,7 @@ public class Bishop extends Piece{
 		//creates an empty list for moves to be added to
 		List<Move> moves = new ArrayList<>();
 		
-		
+
 		//loops through the possible move integers
 		for(int currentMoveCandidate : MOVE_CANDIDATE_DIRECTION) {
 			
@@ -101,8 +103,9 @@ public class Bishop extends Piece{
 	 * going to be used to move the piece
 	 */
 	@Override
-	public Piece movePiece(Move move) {
-		return new Bishop(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor(), false);
+	public Piece movePiece(Move move)
+	{
+		return new Bishop(move.getDestinationCoordinate(),move.getMovedPiece().getPieceColor());
 	}
 
 	@Override

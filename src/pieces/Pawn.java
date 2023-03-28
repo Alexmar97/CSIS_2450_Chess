@@ -96,8 +96,9 @@ public class Pawn extends Piece{
 	 * going to be used to move the piece
 	 */
 	@Override
-	public Piece movePiece(Move move) {
-		return new Pawn(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor(), false);
+	public Piece movePiece(Move move)
+	{
+		return new Pawn(move.getDestinationCoordinate(),move.getMovedPiece().getPieceColor());
 	}
 	
 	@Override
@@ -105,4 +106,25 @@ public class Pawn extends Piece{
 		return "P";
 	}
 
+
+	/**
+	 * Used to identify if a pawn has reached the top rows
+	 * to know if it can be promoted to a different piece
+	 *
+	 */
+	public boolean eigthRankEdgeCheck(int piecePos)
+	{
+		return Board.EIGTH_RANK[piecePos];
+	}
+
+
+	/**
+	 * Used to identify if a pawn has reached the bottom row
+	 * to know if it can be promoted to a different piece
+	 *
+	 */
+	public boolean firstRankEdgeCheck(int piecePos)
+	{
+		return Board.FIRST_RANK[piecePos];
+	}
 }

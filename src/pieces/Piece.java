@@ -52,4 +52,5 @@ public abstract class Piece {
 	public abstract Collection<Move> calculateMoves(Board board);
 	//public abstract Collection<Move> getAttackMoves(Board board);
  	public abstract Piece movePiece(Move move);
+
 }

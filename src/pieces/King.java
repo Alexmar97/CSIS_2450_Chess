@@ -21,9 +21,9 @@ public class King extends Piece{
 	public King(int piecePos, PieceColor pieceColor, boolean isFirstMove) {
 		super(piecePos, pieceColor, isFirstMove);
 	}
-	
+
 	final int[] MOVE_CANDIDATE_DIRECTION = {-9, -8, -7, -1, 1, 7, 8,9};
-	
+
 	/*
 	 * Method that calculates the moves possible by this piece
 	 * needs the board being used to be passed in
@@ -83,7 +83,7 @@ public class King extends Piece{
 		return moves;
 	}
 
-	/*
+		/*
 	 * going to be used to move the piece
 	 */
 	@Override
@@ -95,7 +95,9 @@ public class King extends Piece{
 	public String toString() {
 		return "K";
 	}
-	
+
+	//The method below has accounts for when the king is on the first column AND has an ilegal move (like going
+	//left horizontally or diagonally)
 	public boolean firstColumnEdgeCheck(int piecePos, int candidateOffset)
 	{
 		return Board.FIRST_COLUMN[piecePos] && (candidateOffset == 1 || candidateOffset == -1 || candidateOffset == -8 || candidateOffset == 8 );
@@ -110,5 +112,9 @@ public class King extends Piece{
 	{
 		return Board.EIGTH_COLUMN[piecePos] && (candidateOffset == 1 || candidateOffset == -1 || candidateOffset == -8 || candidateOffset == 8 );
 	}
+
+
+
+
 
 }
