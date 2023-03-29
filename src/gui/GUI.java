@@ -218,30 +218,28 @@ public class GUI {
 									if(destinationTile.getTileCoord() == move.getDestinationCoordinate()) {
 										board = move.makeMove(board, selectedPiece, destinationTile.getTileCoord(), destinationTile.getPiece());
 
-
+										//Looks into the pawn promotion only if there is an actual pawn
+										//being mooved
 										if(activePawn != null)
 										{
+											if(activePawn.eigthRankEdgeCheck(destinationTile.getTileCoord()) || activePawn.firstRankEdgeCheck(destinationTile.getTileCoord())) {
+												System.out.println("FINISH LINE");
+												JOptionPane.showMessageDialog(null, "Pawn needs to be promoted. Please select which piece you'd like");
+												int decision = Integer.parseInt(JOptionPane.showInputDialog("Please select: "));
 
-
-										if(activePawn.eigthRankEdgeCheck(destinationTile.getTileCoord()) || activePawn.firstRankEdgeCheck(destinationTile.getTileCoord())) {
-											System.out.println("FINISH LINE");
-											JOptionPane.showMessageDialog(null, "Pawn needs to be promoted. Please select which piece you'd like");
-											int decision = Integer.parseInt(JOptionPane.showInputDialog("Please select: "));
-
-
-											if (decision == 1) {
-												Queen newQueen = new Queen(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
-												board = move.makeMove(board, newQueen, destinationTile.getTileCoord(), destinationTile.getPiece());
-											} else if (decision == 2) {
-												Rook newRook = new Rook(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
-												board = move.makeMove(board, newRook, destinationTile.getTileCoord(), destinationTile.getPiece());
-											} else if (decision == 3) {
-												Knight newKnight = new Knight(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
-												board = move.makeMove(board, newKnight, destinationTile.getTileCoord(), destinationTile.getPiece());
-											} else if (decision == 4) {
-												Bishop newBishop = new Bishop(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
-												board = move.makeMove(board, newBishop, destinationTile.getTileCoord(), destinationTile.getPiece());
-											}
+												if (decision == 1) {
+													Queen newQueen = new Queen(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
+													board = move.makeMove(board, newQueen, destinationTile.getTileCoord(), destinationTile.getPiece());
+												} else if (decision == 2) {
+													Rook newRook = new Rook(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
+													board = move.makeMove(board, newRook, destinationTile.getTileCoord(), destinationTile.getPiece());
+												} else if (decision == 3) {
+													Knight newKnight = new Knight(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
+													board = move.makeMove(board, newKnight, destinationTile.getTileCoord(), destinationTile.getPiece());
+												} else if (decision == 4) {
+													Bishop newBishop = new Bishop(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
+													board = move.makeMove(board, newBishop, destinationTile.getTileCoord(), destinationTile.getPiece());
+												}
 										}
 
 
