@@ -1,73 +1,130 @@
 package pieces;
 
-import gui.GUI;
-import gui.MouseControls;
-import gui.PieceColor;
-import gui.Board;
-
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class Pawn extends Piece
-{
-    public Pawn(int piecePos, PieceColor pieceColor) {
-        super(piecePos, pieceColor);
-    }
+import board.Board;
+import board.Move;
+import board.Move.AttackMove;
+import board.Move.NormalMove;
+import util.PieceColor;
+
+/*
+ * class to represent the pawn to create a new bishop piece
+ */
+public class Pawn extends Piece{
+
+	//constructor that assumes first move is true
+	public Pawn(int piecePos, PieceColor pieceColor) {
+		super(piecePos, pieceColor, true);
+	}
+	
+	//constructor that takes in first move
+	public Pawn(int piecePos, PieceColor pieceColor, boolean isFirstMove) {
+		super(piecePos, pieceColor, isFirstMove);
+	}
+	
+	//the set of integers that piece can move
+	final int[] MOVE_CANDIDATES = {7, 8, 9, 16};
+	
+	
+	/*
+	 * Method that calculates the moves possible by this piece
+	 * needs the board being used to be passed in
+	 * returns a collection of move objects
+	 */
+	@Override
+	public Collection<Move> calculateMoves(Board board) {
+		
+		//creates an empty list for moves to be added to
+		List<Move> moves = new ArrayList<>();
+		
+		//Looping through each possible move pos
+		for(int currentMoveCandidate : MOVE_CANDIDATES) {
+			
+			//coordinate to check is the pieces position with the offset where we want to move
+			int coordinateToCheck = this.piecePos + (currentMoveCandidate * this.pieceColor.getDirection());
+			
+			//checking to make sure coordinate is on board
+			if(!board.isValidCoord(coordinateToCheck)) {
+				break;
+			}
+			
+			//checking for one spot in front is open
+			if(currentMoveCandidate == 8 && !board.getTile(coordinateToCheck).isTileOccupied()) {
+				moves.add(new NormalMove(board, this, coordinateToCheck));
+			}//checking if two spots ahead is open and is first move and in their starting positions
+			else if((currentMoveCandidate == 16 && this.isFirstMove()) &&
+					(board.SEVENTH_RANK[this.piecePos] && this.getPieceColor().isBlack() ||
+					board.SECOND_RANK[this.piecePos] && this.getPieceColor().isWhite()) ){
+				
+				int skippedTile = this.piecePos + (8 * this.getPieceColor().getDirection());
+				
+				if(!board.getTile(skippedTile).isTileOccupied() && !board.getTile(coordinateToCheck).isTileOccupied()) {
+					moves.add(new NormalMove(board, this, coordinateToCheck));
+				}
+			}//checking for attack the 7 offset attack position
+			else if((currentMoveCandidate == 7 )&& 
+					(board.getTile(coordinateToCheck).isTileOccupied()) &&
+					(!(board.EIGTH_COLUMN[this.piecePos] && this.pieceColor.isWhite()) ||
+					(!(board.FIRST_COLUMN[this.piecePos] && this.pieceColor.isBlack())))) {
+				
+				Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
+				
+				if(this.getPieceColor() != otherPiece.getPieceColor()) {
+					moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
+				}
+			}//checking for attack on the 9 offset position
+			else if(currentMoveCandidate == 9 &&
+					(board.getTile(coordinateToCheck).isTileOccupied()) &&
+					(!(board.EIGTH_COLUMN[this.piecePos] && this.pieceColor.isBlack()) ||
+					(!(board.FIRST_COLUMN[this.piecePos] && this.pieceColor.isWhite())))) {
+				
+				Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
+				
+				if(this.getPieceColor() != otherPiece.getPieceColor()) {
+					moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
+				}
+			}
+			
+		}
+		return moves;
+	}
+	
+	/*
+	 * going to be used to move the piece
+	 */
+	@Override
+	public Piece movePiece(Move move)
+	{
+		return new Pawn(move.getDestinationCoordinate(),move.getMovedPiece().getPieceColor());
+	}
+	
+	@Override
+	public String toString() {
+		return "P";
+	}
 
 
-    @Override
-    public ArrayList<Integer> allowedMoves(int currentPos, int endPos)
-    {
-        currentPos = this.piecePos;
-        ArrayList<Integer> allowedMoves = new ArrayList<>();
-
-//        allowedMoves.add(currentPos+8);//regular move
-//        allowedMoves.add(currentPos+16);//first turn only
-//        allowedMoves.add(currentPos+9);//attack move
-
-
-//        if(/* tileAtPos(allowedMoves[0]).isEmpty()*/)
-//        {
-//            allowedMoves.add(currentPos+8);//regular move
-//        }
-//
-//        if(/* tileAtPos(allowedMoves[0]).isEmpty()*/)
-//        {
-//            allowedMoves.add(currentPos+16);//first turn only
-//        }
-//
-//        if(/* tileAtPos(allowedMoves[0]).isEmpty()*/)
-//        {
-//            allowedMoves.add(currentPos+9);//attack move
-//        }
+	/**
+	 * Used to identify if a pawn has reached the top rows
+	 * to know if it can be promoted to a different piece
+	 *
+	 */
+	public boolean eigthRankEdgeCheck(int piecePos)
+	{
+		return Board.EIGTH_RANK[piecePos];
+	}
 
 
-        MouseControls mc = new MouseControls();
-
-
-
-        if(!GUI.board.getTile(mc.idVariable+8).isTileOccupied())
-        {
-            allowedMoves.add(currentPos+8);//regular move
-        }
-
-
-        return allowedMoves;
-    }
-
-    @Override
-    public String toString() {
-        return "K";
-    }
-
+	/**
+	 * Used to identify if a pawn has reached the bottom row
+	 * to know if it can be promoted to a different piece
+	 *
+	 */
+	public boolean firstRankEdgeCheck(int piecePos)
+	{
+		return Board.FIRST_RANK[piecePos];
+	}
 }
-
-
-
-//Allowed moves:
-// - Always allowed to move one spot forward if not occupied already by an allied piece
-// - Always allowed two moves forward if its first turn for pawn and not already occupied
-// - Can move diagonally to take down an enemy piece
-
-// To move one spot forward it will always be the current pos + 8
-// To move two spots forward it will always be current pos + 16
-// To move one spot diagonally it will always be current pos + 9

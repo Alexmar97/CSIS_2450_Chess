@@ -1,5 +1,6 @@
-package gui;
+package board;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -12,23 +13,33 @@ import pieces.Pawn;
 import pieces.Piece;
 import pieces.Queen;
 import pieces.Rook;
-//import player.BlackPlayer;
-//import player.Player;
-//import player.WhitePlayer;
+import player.BlackPlayer;
+import player.Player;
+import player.WhitePlayer;
+import util.PieceColor;
 
 public class Board {
 
-	List<Tile> gameBoard;
+	//the list of tiles the board is constructed of
+	public List<Tile> gameBoard;
+	
+	//TODO collection of each pieces currently not being used
 	Collection<Piece> whitePieces;
 	Collection<Piece> blackPieces;
-	Map<Integer, Piece> currentBoardLayout = new HashMap<>();
 	
-//	WhitePlayer whitePlayer;
-//	BlackPlayer blackPlayer;
+	//key value pairs of the integer coordinate of the board and the piece class that is on that tile
+	public Map<Integer, Piece> currentBoardLayout = new HashMap<>();
+	
+	//TODO each player currently not being used
+	WhitePlayer whitePlayer;
+	BlackPlayer blackPlayer;
+	
+	PieceColor currentPlayer = PieceColor.WHITE;
 	
 	public final static int NUM_TILES = 64;
 	final static int NUM_TILES_ROW = 8;
 	
+	//Used to see if a piece position is in a certain column or row
 	public final static boolean[] FIRST_COLUMN = inColumn(0);
 	public final static boolean[] SECOND_COLUMN = inColumn(1);
 	public final static boolean[] THIRD_COLUMN = inColumn(2);
@@ -49,14 +60,23 @@ public class Board {
 	
 	/*
 	 * constructor
+	 * uncomment the default layout and comment the example board
+	 * to get the full board
 	 */
 	public Board() {
-		createDefaultLayout();
+		//createDefaultLayout();
+		createMoveExampleBoard();
 		this.gameBoard = createGameBoard();
 		this.whitePieces = getWhitePieces();
 		this.blackPieces = getBlackPieces();
-//		this.whitePlayer = new WhitePlayer();
-//		this.blackPlayer = new BlackPlayer();
+		this.whitePlayer = new WhitePlayer();
+		this.blackPlayer = new BlackPlayer();
+	}
+	public Board(PieceColor currentPlayer) {
+		this.currentPlayer = currentPlayer;
+		this.whitePieces = getWhitePieces();
+		this.blackPieces = getBlackPieces();
+		this.whitePlayer = new WhitePlayer();
 	}
 
 
@@ -64,13 +84,13 @@ public class Board {
 	 * getters from the board
 	 * @return
 	 */	
-//	public Player whitePlayer() {
-//		return this.whitePlayer;
-//	}
-//
-//	public Player blackPlayer() {
-//		return this.blackPlayer;
-//	}
+	public Player whitePlayer() {
+		return this.whitePlayer;
+	}
+	
+	public Player blackPlayer() {
+		return this.blackPlayer;
+	}
 	
 	public Collection<Piece> getBlackPieces(){
 		return this.blackPieces;
@@ -82,7 +102,10 @@ public class Board {
 	public Tile getTile(int tileCoord) {
 		return gameBoard.get(tileCoord);
 	}
-
+	public PieceColor getCurrentPlayer() {
+		return this.currentPlayer;
+	}
+	
 	/**
 	 * creating the array of tiles for the layout of the board
 	 * @return
@@ -93,18 +116,19 @@ public class Board {
 			tiles[i] = Tile.createTile(i, currentBoardLayout.get(i));
 		}
 		return List.of(tiles);
-
 	}
 	
 	
 	/**
 	 * setting pieces to their corresponding spots in table
-	 * @return
 	 */
 	public void setPiece(Piece piece){
 		currentBoardLayout.put(piece.getPiecePos(), piece);
 	}
 	
+	/*
+	 * setting all the new pieces to create a fresh board
+	 */
 	public void createDefaultLayout() {
 		setPiece(new Rook(0, PieceColor.BLACK));
 		setPiece(new Knight(1, PieceColor.BLACK));
@@ -144,6 +168,27 @@ public class Board {
 		
 	}
 	
+	/*
+	 * setting some random pieces to test move functionality
+	 */
+	public void createMoveExampleBoard() {
+		setPiece(new Rook(27, PieceColor.BLACK));
+		setPiece(new Pawn(17, PieceColor.WHITE));
+		setPiece(new Pawn(49, PieceColor.WHITE));
+		setPiece(new Pawn(34, PieceColor.WHITE));
+		setPiece(new Knight(36, PieceColor.BLACK));
+		setPiece(new Knight(40, PieceColor.BLACK));
+		setPiece(new Bishop(47, PieceColor.BLACK));
+		setPiece(new Pawn(10, PieceColor.BLACK));
+		setPiece(new King(33, PieceColor.BLACK));
+		setPiece(new Queen(54, PieceColor.BLACK));
+		setPiece(new Rook(63, PieceColor.BLACK));
+		setPiece(new Pawn(15, PieceColor.BLACK));
+	}
+	
+	/*
+	 * method to see the piece is in the row passed in
+	 */
 	public static boolean[] inRow(int startingRowNum) {
 		boolean[] boolArray = new boolean[NUM_TILES];
 		do {
@@ -153,6 +198,9 @@ public class Board {
 		return boolArray;
 	}
 	
+	/*
+	 * method to see the piece is in the column passed in
+	 */
 	public static boolean[] inColumn(int startingColNum) {
 		boolean[] boolArray = new boolean[NUM_TILES];
 		do {
@@ -162,10 +210,24 @@ public class Board {
 		return boolArray;
 	}
 	
+	/*
+	 * testing if the passed in coordinate is on the board
+	 */
 	public  boolean isValidCoord(int coord) {
 		return coord >= 0 && coord < NUM_TILES;
 	}
-
-
-
+	
+	/*
+	 * get all active pieces
+	 */
+	public static Collection<Piece> getActivePieces(List<Tile> gameBoard){
+		List<Piece> activePieces = new ArrayList<>();
+		for(Tile tile : gameBoard) {
+			if(tile.isTileOccupied()) {
+				Piece piece = tile.getPiece();
+				activePieces.add(piece);
+			}
+		}
+		return activePieces;
+	}
 }

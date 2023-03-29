@@ -1,31 +1,56 @@
 package pieces;
 
-import gui.PieceColor;
-import gui.Tile;
+import java.util.Collection;
 
-import java.util.ArrayList;
+import board.Board;
+import board.Move;
+import util.PieceColor;
 
+/*
+ * abstract class for all pieces for layout of pieces
+ */
 public abstract class Piece {
 
 	int piecePos;
 	PieceColor pieceColor;
-
-
+	boolean isFirstMove;
 	
-	public Piece(int piecePos, PieceColor pieceColor) {
+	/*
+	 * constructor for pieces needs
+	 * position
+	 * color
+	 * and if its first move
+	 */
+	public Piece(int piecePos, PieceColor pieceColor, boolean isFirstMove) {
 		this.piecePos = piecePos;
 		this.pieceColor = pieceColor;
+		this.isFirstMove = isFirstMove;
 	}
 	
+	/*
+	 * getter for position
+	 */
 	public int getPiecePos() {
 		return this.piecePos;
 	}
 	
+	/*
+	 * getter for piece color
+	 */
 	public PieceColor getPieceColor() {
 		return this.pieceColor;
 	}
-
-
-	 public abstract ArrayList<Integer> allowedMoves(int currentPos, int endPos);
+	
+	/*
+	 * getter for if first move
+	 */
+	public boolean isFirstMove() {
+		return this.isFirstMove;
+	}
+	
+	//abstract methods for calculating mvoes and moving piece
+	public abstract Collection<Move> calculateMoves(Board board);
+	//public abstract Collection<Move> getAttackMoves(Board board);
+ 	public abstract Piece movePiece(Move move);
 
 }

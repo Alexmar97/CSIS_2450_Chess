@@ -1,71 +1,120 @@
 package pieces;
 
-import gui.PieceColor;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-public class Knight extends Piece
-{
-    public Knight(int piecePos, PieceColor pieceColor)
-    {
-        super(piecePos, pieceColor);
-    }
+import board.Board;
+import board.Move;
+import board.Move.AttackMove;
+import board.Move.NormalMove;
+import util.PieceColor;
 
-    @Override
-    public ArrayList<Integer> allowedMoves(int currentPos, int endPos)
-    {
-        currentPos = this.piecePos;
-        ArrayList<Integer> allowedMoves = new ArrayList<>();
+/*
+ * class to represent the bishop to create a new bishop piece
+ */
+public class Knight extends Piece{
 
-        allowedMoves.add(currentPos-17);
-        allowedMoves.add(currentPos-15);
-        allowedMoves.add(currentPos-10);
-        allowedMoves.add(currentPos-6);
-        allowedMoves.add(currentPos+6);
-        allowedMoves.add(currentPos+10);
-        allowedMoves.add(currentPos-15);
-        allowedMoves.add(currentPos+17);
-
-
-
-//        allowedMoves[0] = currentPos-17;
-//        allowedMoves[1] = currentPos-15;
-//        allowedMoves[2] = currentPos-10;
-//        allowedMoves[3] = currentPos-6;
-//        allowedMoves[4] = currentPos+6;
-//        allowedMoves[5] = currentPos+10;
-//        allowedMoves[6] = currentPos+15;
-//        allowedMoves[7] = currentPos-17;
-
-//        for(int i = 0; i<allowedMoves.length; i++)
-//        {
-//            if(/* tile.atPos(allowedMoves[0].isEmpty*/)
-//        }
+	//constructor that assumes first move is true
+	public Knight(int piecePos, PieceColor pieceColor) {
+		super(piecePos, pieceColor, true);
+	}
+	
+	//constructor that takes in first move
+	public Knight(int piecePos, PieceColor pieceColor, boolean isFirstMove) {
+		super(piecePos, pieceColor, isFirstMove);
+	}
+	
+	//the set of integers that piece can move 
+	final int[] MOVE_CANDIDATES = {-17, -15, -10, -6, 6, 10, 15, 17};
 
 
-        return allowedMoves;
-    }
+	
+	/*
+	 * Method that calculates the moves possible by this piece
+	 * needs the board being used to be passed in
+	 * returns a collection of move objects
+	 */
+	@Override
+	public Collection<Move> calculateMoves(Board board) {
+		//creates an empty list for moves to be added to
+		List<Move> moves = new ArrayList<>();
+		
+		//loops through the possible move integers
+		for(int currentMoveCandidate : MOVE_CANDIDATES) {
 
-    @Override
-    public String toString() {
-        return "K";
-    }
-
-    //all candidate legal moves for knights: when 35 is the position of our knight
-//not necessarily legal as it may be taken or out of bounds
-
-//35 + 6
-//35 -6
-//35 + 10
-//35 - 10
-//35 + 15
-//35 - 15
-//35 + 17
-//35 - 17
+			int coordinateToCheck = this.piecePos + currentMoveCandidate;
 
 
 
+			//checking for edge cases
+			if(board.isValidCoord(coordinateToCheck))
+			{
+				if(firstColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
+					secondColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
+					seventhColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
+					eigthColumnEdgeCheck(this.piecePos, currentMoveCandidate)) {
+					continue;
+				}
+				
+				//if no piece is on it add to non attack moves
+				if(!board.getTile(coordinateToCheck).isTileOccupied()) {
+					moves.add(new NormalMove(board, this, coordinateToCheck));
+				}
+				//if their is a piece on coordinate;
+				else if(board.getTile(coordinateToCheck).isTileOccupied()) {
+					Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
+
+					if(otherPiece.getPieceColor() != this.pieceColor) {
+						moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
+					}
+				}
+			}
+		}
+		return moves;
+	}
+
+	/*
+	 * checks to see if is in first column and move offsets that we can not move to 
+	 */
+	public boolean firstColumnEdgeCheck(int currentPos, int candidateOffset) {
+		return Board.FIRST_COLUMN[currentPos] && (candidateOffset == 6 || candidateOffset == 15 ||
+				candidateOffset == -10 || candidateOffset == -17);
+	}
+	
+	/*
+	 * checks to see if is in second column and move offsets that we can not move to 
+	 */
+	public boolean secondColumnEdgeCheck(int currentPos, int candidateOffset) {
+		return Board.SECOND_COLUMN[currentPos] && (candidateOffset == 6 || candidateOffset == -10);
+	}
+	
+	/*
+	 * checks to see if is in seventh column and move offsets that we can not move to 
+	 */
+	public boolean seventhColumnEdgeCheck(int currentPos, int candidateOffset) {
+		return Board.SEVENTH_COLUMN[currentPos] && (candidateOffset == -6 || candidateOffset == 10);
+	}
+	
+	/*
+	 * checks to see if is in eigth column and move offsets that we can not move to 
+	 */
+	public boolean eigthColumnEdgeCheck(int currentPos, int candidateOffset) {
+		return Board.EIGTH_COLUMN[currentPos] && (candidateOffset == -6 || candidateOffset == -15 ||
+				candidateOffset == 10 || candidateOffset == 17);
+	}
+
+	/*
+	 * going to be used to move the piece
+	 */
+	@Override
+	public Piece movePiece(Move move) {
+		return new Knight(move.getDestinationCoordinate(), move.getMovedPiece().getPieceColor(), false);
+	}
+	
+	@Override
+	public String toString() {
+		return "N";
+	}
 
 }
-

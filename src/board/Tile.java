@@ -1,10 +1,13 @@
-package gui;
+package board;
 
 
 import java.util.HashMap;
 import java.util.Map;
 import pieces.Piece;
 
+/*
+ * This class is to make an object for reach tile that is represented on the board
+ */
 public abstract class Tile {
 
 	int tileCoord;
