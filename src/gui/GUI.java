@@ -160,6 +160,7 @@ public class GUI {
 	}
 
 
+
 	/*
 	 * tile panel is its own separate panel that makes each tile able to interact with
 	 */
@@ -218,6 +219,8 @@ public class GUI {
 									if(destinationTile.getTileCoord() == move.getDestinationCoordinate()) {
 										board = move.makeMove(board, selectedPiece, destinationTile.getTileCoord(), destinationTile.getPiece());
 
+
+
 										//Looks into the pawn promotion only if there is an actual pawn
 										//being mooved
 										if(activePawn != null)
@@ -225,7 +228,7 @@ public class GUI {
 											if(activePawn.eigthRankEdgeCheck(destinationTile.getTileCoord()) || activePawn.firstRankEdgeCheck(destinationTile.getTileCoord())) {
 												System.out.println("FINISH LINE");
 												JOptionPane.showMessageDialog(null, "Pawn needs to be promoted. Please select which piece you'd like");
-												int decision = Integer.parseInt(JOptionPane.showInputDialog("Please select: "));
+												int decision = Integer.parseInt(JOptionPane.showInputDialog("Please select 1, 2, 3, or 4: "));
 
 												if (decision == 1) {
 													Queen newQueen = new Queen(destinationTile.getTileCoord(), selectedPiece.getPieceColor());
