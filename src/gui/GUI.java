@@ -51,6 +51,7 @@ public class GUI {
 	public Tile destinationTile;
 	public Piece selectedPiece;
 
+	public Move movedActivePawn;
 	public Pawn activePawn;
 	public int selectedPromotion;
 	public boolean restart = false;
@@ -199,6 +200,8 @@ public class GUI {
 
 			//TODO The whole mouse listener as an inner class I was struggling to get it to work as a seperate class
 			addMouseListener(new MouseListener() {
+				
+			
 
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -210,7 +213,9 @@ public class GUI {
 						destinationTile = null;
 						//if left is clicked
 					}else if(SwingUtilities.isLeftMouseButton(e)) {
+						
 						if(sourceTile == null) {
+							activePawn = null;
 							//sets sourceTile as the tile id clicked on
 							sourceTile = board.getTile(tileId);
 							//sets selected piece as the piece on that tile
@@ -227,6 +232,7 @@ public class GUI {
 							if(selectedPiece == null || selectedPiece.getPieceColor() != board.getCurrentPlayer().getTeam()) {
 								sourceTile = null;
 								selectedPiece = null;
+								activePawn = null;
 								System.out.println("No piece selected");
 							}
 						}else {
@@ -243,43 +249,11 @@ public class GUI {
 											if(activePawn.eigthRankEdgeCheck(destinationTile.getTileCoord()) || activePawn.firstRankEdgeCheck(destinationTile.getTileCoord()))
 											{
 												System.out.println("FINISH LINE");
-												//PromotionFrame pf = new PromotionFrame(PieceColor.BLACK);
-											
-											
-												int decision = selectedPromotion;
-											
-												System.out.println(decision);
-												//JOptionPane.showMessageDialog(null, "Pawn needs to be promoted. Please select which piece you'd like");
-												//int decision = Integer.parseInt(JOptionPane.showInputDialog("Please select: "));
-
-											
-												if(decision == 1)
-												{
-													Queen newQueen = new Queen(destinationTile.getTileCoord(),selectedPiece.getPieceColor());
-													board = move.makeMove(board, newQueen, destinationTile.getTileCoord(), destinationTile.getPiece());
-												}
-
-												else if(decision == 2)
-												{
-													Rook newRook = new Rook(destinationTile.getTileCoord(),selectedPiece.getPieceColor());
-													board = move.makeMove(board, newRook, destinationTile.getTileCoord(), destinationTile.getPiece());
-												}
-
-												else if (decision == 3)
-												{
-													Knight newKnight = new Knight(destinationTile.getTileCoord(),selectedPiece.getPieceColor());
-													board = move.makeMove(board, newKnight, destinationTile.getTileCoord(), destinationTile.getPiece());
-												}
-
-												else if (decision == 4)
-												{
-													Bishop newBishop = new Bishop(destinationTile.getTileCoord(),selectedPiece.getPieceColor());
-													board = move.makeMove(board, newBishop, destinationTile.getTileCoord(), destinationTile.getPiece());
-												}
+												movedActivePawn = move;
+												PromotionFrame pf = new PromotionFrame(activePawn.getPieceColor(), boardPanel);
 											
 											//break;
-											}
-											 
+											}		 
 										}
 
 
@@ -294,6 +268,7 @@ public class GUI {
 								if(destinationTile.getPiece() == null) {
 									System.out.println("cant move here");
 								}else if(destinationTile.getPiece().getPieceColor() == sourceTile.getPiece().getPieceColor()) {
+									activePawn = null;
 									sourceTile = destinationTile;
 									selectedPiece = sourceTile.getPiece();
 									destinationTile = null;
@@ -301,8 +276,9 @@ public class GUI {
 							}
 						}
 					}
+					
 					// redraws board when clicked on
-					SwingUtilities.invokeLater(new Runnable(){
+					SwingUtilities.invokeLater(new Runnable(){				
 						@Override
 						public void run() {
 							boardPanel.drawBoard(board);
@@ -339,20 +315,6 @@ public class GUI {
 			validate();
 		}
 		
-		
-		public void checkWinningConditions() {
-			if(board.blackPlayer().isInCheckMate()) {
-				displayMessage("White wins");
-				restartGame();
-			}else if(board.whitePlayer().isInCheckMate()) {
-				displayMessage("Black wins");
-				restartGame();
-			}
-		}
-		
-		public void displayMessage(String message) {
-			JOptionPane.showMessageDialog(null, message);
-		}
 
 
 //
@@ -447,6 +409,57 @@ public class GUI {
 	
 	
 	
+	public void checkWinningConditions() {
+		if(board.blackPlayer().isInCheckMate()) {
+			displayMessage("White wins");
+			restartGame();
+		}else if(board.whitePlayer().isInCheckMate()) {
+			displayMessage("Black wins");
+			restartGame();
+		}
+	}
+	
+	public void displayMessage(String message) {
+		JOptionPane.showMessageDialog(null, message);
+	}
+	
+	
+	
+	public void getNewPromotionPiece(int decision, BoardPanel boardPanel) {
+		//JOptionPane.showMessageDialog(null, "Pawn needs to be promoted. Please select which piece you'd like");
+		//int decision = Integer.parseInt(JOptionPane.showInputDialog("Please select: "));
+		
+		if(decision == 0)
+		{
+			Queen newQueen = new Queen(activePawn.getPiecePos(),activePawn.getPieceColor());
+			board = movedActivePawn.makeMove(board, newQueen, activePawn.getPiecePos(), null);
+		}
+
+		else if(decision == 1)
+		{
+			Rook newRook = new Rook(activePawn.getPiecePos(),activePawn.getPieceColor());
+			board = movedActivePawn.makeMove(board, newRook, activePawn.getPiecePos(), null);
+		}
+
+		else if (decision == 2)
+		{
+			Knight newKnight = new Knight(activePawn.getPiecePos(),activePawn.getPieceColor());
+			board = movedActivePawn.makeMove(board, newKnight, activePawn.getPiecePos(), null);
+		}
+
+		else if (decision == 3)
+		{
+			Bishop newBishop = new Bishop(activePawn.getPiecePos(),activePawn.getPieceColor());
+			board = movedActivePawn.makeMove(board, newBishop, activePawn.getPiecePos(), null);
+		}
+		
+		boardPanel.drawBoard(board);
+		checkWinningConditions();
+		activePawn = null;
+	}
+	
+	
+	/*
 	public void createPromotionFrame(PieceColor color) {
 		Dimension PROMOTION_FRAME_SIZE = new Dimension(200,200);
 		JFrame frame = new JFrame("Promotion");
@@ -459,24 +472,20 @@ public class GUI {
 		
 		
 	}
+	*/
 	
 	
 	public class PromotionFrame extends JFrame {
-		PieceColor colorToSet;
 		Dimension PROMOTION_FRAME_SIZE = new Dimension(200,200);
-		PromotionFrame(PieceColor colorToSet){
-			this.colorToSet = colorToSet;
+		PromotionFrame(PieceColor colorToSet, BoardPanel boardPanel){
 			this.setLayout(new BorderLayout());
 			this.setSize(PROMOTION_FRAME_SIZE);
 			
-			this.add(new PromotionPanel(this), BorderLayout.CENTER);
+			this.add(new PromotionPanel(this, boardPanel, colorToSet), BorderLayout.CENTER);
 			this.setLocationRelativeTo(null);
 			this.setVisible(true);
 		}
 		
-		public int getInt() {
-			return 1;
-		}
 	}
 	
 	
@@ -486,12 +495,12 @@ public class GUI {
 		Dimension PROMOTION_FRAME_SIZE = new Dimension(200,200);
 		JFrame frame;
 		
-		PromotionPanel(JFrame frame){
+		PromotionPanel(JFrame frame, BoardPanel boardPanel, PieceColor colorToSet){
 			super(new GridLayout(2,2));
 			this.frame = frame;
 			this.promotionTiles = new ArrayList<>();
 			for(int i = 0; i < 4; i++) {
-				PromotionTilePanel tilePanel = new PromotionTilePanel(this, i);
+				PromotionTilePanel tilePanel = new PromotionTilePanel(this, i, boardPanel, colorToSet);
 				this.promotionTiles.add(tilePanel);
 				add(tilePanel);
 			}
@@ -508,16 +517,19 @@ public class GUI {
 	 */
 	public class PromotionTilePanel extends JPanel{
 		public int tileId;
+		public PieceColor colorToSet;
 
 		//creates the panel with their id
-		public PromotionTilePanel(PromotionPanel promotionPanel, int tileId) {
+		public PromotionTilePanel(PromotionPanel promotionPanel, int tileId, BoardPanel boardPanel, PieceColor colorToSet) {
 			super(new GridBagLayout());
 			this.tileId = tileId;
+			this.colorToSet = colorToSet;
 			setPreferredSize(TILE_SIZE);
 
 			//assignTileColor();
 			//calls and adds the tiles color and piece icon
-			assignPromotionTilePieceIcon();
+			assignPromotionTilePieceIcon(colorToSet, tileId);
+			assignTileColor();
 			Border blackline = BorderFactory.createLineBorder(Color.black,2);
 			this.setBorder(blackline);
 
@@ -528,9 +540,8 @@ public class GUI {
 				public void mouseClicked(MouseEvent e) {
 				
 					if(SwingUtilities.isLeftMouseButton(e)) {
-						selectedPromotion = tileId;
-						System.out.println(selectedPromotion);
 						promotionPanel.frame.dispose();
+						getNewPromotionPiece(tileId, boardPanel);
 					}
 				}
 
@@ -557,7 +568,10 @@ public class GUI {
 					// TODO Auto-generated method stub
 					
 				}
+				
+				
 			}); 
+			
 		}
 		
 		
@@ -567,7 +581,8 @@ public class GUI {
 		 * and repains it
 		 */
 		public void drawTile() {
-			assignPromotionTilePieceIcon();
+			assignPromotionTilePieceIcon(colorToSet, tileId);
+			assignTileColor();
 			validate();
 			repaint();
 		}
@@ -575,20 +590,36 @@ public class GUI {
 		/*
 		 * using each pieces to string method to get the piece and then grab the image icon to display
 		 */
-		private void assignPromotionTilePieceIcon() {
-			String bishop = "BB.gif";
-			String knight = "BN.gif";
-			String rook = "BR.gif";
-			String queen = "BQ.gif";
+		private void assignPromotionTilePieceIcon(PieceColor colorToSet, int tileId) {
+			String piecePath = "";
+			switch(tileId) {
+			case 0: piecePath = "Q.gif";
+			break;
+			case 1: piecePath = "R.gif";
+			break;
+			case 2: piecePath = "N.gif";
+			break;
+			case 3: piecePath = "B.gif";
+			}
+			System.out.println(tileId + piecePath);
 			this.removeAll();
 			try {
-				Image image = ImageIO.read(new File(defaultPieceImagesPath + bishop));
+				Image image = ImageIO.read(new File(defaultPieceImagesPath + colorToSet.toString().substring(0,1) + piecePath));
 				image = image.getScaledInstance(80, 80, image.SCALE_DEFAULT);
 				add(new JLabel(new ImageIcon(image)));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				
+			}
+		}
+		
+		
+		public void assignTileColor() {
+			if(tileId == 0 || tileId == 3) {
+				setBackground(Color.DARK_GRAY);
+			}else  {
+				setBackground(Color.LIGHT_GRAY);
 			}
 		}
 	}
