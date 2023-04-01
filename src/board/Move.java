@@ -1,6 +1,8 @@
 package board;
 
 import pieces.Piece;
+import player.BlackPlayer;
+import player.WhitePlayer;
 import util.PieceColor;
 
 /*
@@ -63,9 +65,9 @@ public abstract class Move {
 	public Board makeMove(Board board, Piece movedPiece, int destinationCoordinate, Piece attackedPiece) {
 		Board newBoard;
 		if(movedPiece.getPieceColor() == PieceColor.WHITE) {
-			newBoard = new Board(PieceColor.BLACK);
+			newBoard = new Board(board.blackPlayer());
 		}else {
-			newBoard = new Board(PieceColor.WHITE);
+			newBoard = new Board(board.whitePlayer());
 		}
 		for(Piece piece : board.getActivePieces(board.gameBoard)) {
 			if(!this.movedPiece.equals(piece)) {
@@ -75,6 +77,10 @@ public abstract class Move {
 		newBoard.setPiece(movedPiece.movePiece(this));
 		//set attacked piece in grave yard
 		newBoard.gameBoard = newBoard.createGameBoard();
+		newBoard.whitePieces = newBoard.getWhiteActivePieces(newBoard.gameBoard);
+		newBoard.blackPieces = newBoard.getBlackActivePieces(newBoard.gameBoard);
+		newBoard.whitePlayer = new WhitePlayer(newBoard, newBoard.calculateLegalMoves(newBoard.whitePieces), newBoard.calculateLegalMoves(newBoard.blackPieces));
+		newBoard.blackPlayer = new BlackPlayer(newBoard, newBoard.calculateLegalMoves(newBoard.blackPieces), newBoard.calculateLegalMoves(newBoard.whitePieces));
 		return newBoard;
 	}
 	

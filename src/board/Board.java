@@ -34,7 +34,9 @@ public class Board {
 	WhitePlayer whitePlayer;
 	BlackPlayer blackPlayer;
 	
-	PieceColor currentPlayer = PieceColor.WHITE;
+	private Player currentPlayer;
+	
+	private String message;
 	
 	public final static int NUM_TILES = 64;
 	final static int NUM_TILES_ROW = 8;
@@ -67,28 +69,26 @@ public class Board {
 		//createDefaultLayout();
 		createMoveExampleBoard();
 		this.gameBoard = createGameBoard();
-		this.whitePieces = getWhitePieces();
-		this.blackPieces = getBlackPieces();
-		this.whitePlayer = new WhitePlayer();
-		this.blackPlayer = new BlackPlayer();
+		this.whitePieces = getWhiteActivePieces(gameBoard);
+		this.blackPieces = getBlackActivePieces(gameBoard);
+		this.whitePlayer = new WhitePlayer(this, calculateLegalMoves(whitePieces), calculateLegalMoves(blackPieces));
+		this.blackPlayer = new BlackPlayer(this, calculateLegalMoves(blackPieces), calculateLegalMoves(whitePieces));
+		this.currentPlayer = whitePlayer();
 	}
-	public Board(PieceColor currentPlayer) {
+	
+	public Board(Player currentPlayer) {
 		this.currentPlayer = currentPlayer;
-		this.whitePieces = getWhitePieces();
-		this.blackPieces = getBlackPieces();
-		this.whitePlayer = new WhitePlayer();
 	}
-
 
 	/**
 	 * getters from the board
 	 * @return
 	 */	
-	public Player whitePlayer() {
+	public WhitePlayer whitePlayer() {
 		return this.whitePlayer;
 	}
 	
-	public Player blackPlayer() {
+	public BlackPlayer blackPlayer() {
 		return this.blackPlayer;
 	}
 	
@@ -102,7 +102,7 @@ public class Board {
 	public Tile getTile(int tileCoord) {
 		return gameBoard.get(tileCoord);
 	}
-	public PieceColor getCurrentPlayer() {
+	public Player getCurrentPlayer() {
 		return this.currentPlayer;
 	}
 	
@@ -181,6 +181,7 @@ public class Board {
 		setPiece(new Bishop(47, PieceColor.BLACK));
 		setPiece(new Pawn(10, PieceColor.BLACK));
 		setPiece(new King(33, PieceColor.BLACK));
+		setPiece(new King(1, PieceColor.WHITE));
 		setPiece(new Queen(54, PieceColor.BLACK));
 		setPiece(new Rook(63, PieceColor.BLACK));
 		setPiece(new Pawn(15, PieceColor.BLACK));
@@ -229,5 +230,49 @@ public class Board {
 			}
 		}
 		return activePieces;
+	}
+	
+	/*
+	 * get all of Blacks active pieces
+	 */
+	public static Collection<Piece> getBlackActivePieces(List<Tile> gameBoard){
+		List<Piece> activePieces = new ArrayList<>();
+		for(Tile tile : gameBoard) {
+			if(tile.isTileOccupied()) {
+				Piece piece = tile.getPiece();
+				if(piece.getPieceColor() == PieceColor.BLACK) {
+					activePieces.add(piece);
+				}
+			}
+		}
+		return activePieces;
+	}
+	
+	/*
+	 * get all of Blacks active pieces
+	 */
+	public static Collection<Piece> getWhiteActivePieces(List<Tile> gameBoard){
+		List<Piece> activePieces = new ArrayList<>();
+		for(Tile tile : gameBoard) {
+			if(tile.isTileOccupied()) {
+				Piece piece = tile.getPiece();
+				if(piece.getPieceColor() == PieceColor.WHITE) {
+					activePieces.add(piece);
+				}
+			}
+		}
+		return activePieces;
+	}
+	
+	
+	/*
+	 * gets all possible moves for all the players pieces
+	 */
+	public Collection<Move> calculateLegalMoves(Collection<Piece> pieces) {
+		List<Move> legalMoves = new ArrayList<>();
+		for(Piece piece : pieces) {
+			legalMoves.addAll(piece.calculateMoves(this));
+		}
+		return legalMoves;
 	}
 }
