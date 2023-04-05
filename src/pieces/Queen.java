@@ -7,6 +7,7 @@ import java.util.List;
 import board.Board;
 import board.Move;
 import board.Move.AttackMove;
+import board.Move.KingCheckMove;
 import board.Move.NormalMove;
 import util.PieceColor;
 
@@ -22,7 +23,7 @@ public class Queen extends Piece{
 	public Queen(int piecePos, PieceColor pieceColor, boolean isFirstMove) {
 		super(piecePos, pieceColor, isFirstMove);
 	}
-
+	
 	final int[] MOVE_CANDIDATE_DIRECTION = {-9, -8, -7, -1, 1, 7, 8, 9};
 
 	/*
@@ -41,12 +42,13 @@ public class Queen extends Piece{
 				for(int currentMoveCandidate : MOVE_CANDIDATE_DIRECTION)
 				{
 					int coordinateToCheck = this.piecePos + currentMoveCandidate;
+					boolean behindPiece = false;
 
 					//loop as long as the coordinate is valid and the number of allowed moves for the piece is not exceeded
 					while(board.isValidCoord(coordinateToCheck))
 					{
 						//checks to see if piece is on the edge and breaks out if so
-						if(firstColumnEdgeCheck(this.piecePos,currentMoveCandidate) ||
+						if(firstColumnEdgeCheck(this.piecePos,currentMoveCandidate) || 
 								eigthColumnEdgeCheck(this.piecePos, currentMoveCandidate)) {
 							break;
 						}
@@ -61,7 +63,11 @@ public class Queen extends Piece{
 						//if the coordinate that we're checking is empty, then we add this to the list of possible moves
 						if (!board.getTile(coordinateToCheck).isTileOccupied())
 						{
-							moves.add(new NormalMove(board, this, coordinateToCheck));
+							if(behindPiece) {
+								moves.add(new KingCheckMove(board, this, coordinateToCheck));
+							}else {
+								moves.add(new NormalMove(board, this, coordinateToCheck));
+							}
 						}
 
 
@@ -74,21 +80,18 @@ public class Queen extends Piece{
 							{
 								moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 							}
-							break;
+							behindPiece = true;
 						}
 
-				//System.out.println(coordinateToCheck);
 
-				//adds to the next move to check
-				//{+1 +1 +1 +1 ....}
-				//{+8 +8 +8 +8...}
-				coordinateToCheck += currentMoveCandidate;
-			}
-
-
-		}
-		return moves;
-
+						//adds to the next move to check
+						//{+1 +1 +1 +1 ....}
+						//{+8 +8 +8 +8...}
+						coordinateToCheck += currentMoveCandidate;
+					}
+					behindPiece = false;
+				}
+				return moves;
 	}
 
 	/*
@@ -103,7 +106,7 @@ public class Queen extends Piece{
 	public String toString() {
 		return "Q";
 	}
-
+	
 	public boolean firstColumnEdgeCheck(int piecePos, int candidateOffset)
 	{
 		return Board.FIRST_COLUMN[piecePos] && (candidateOffset == -9 || candidateOffset == -1 || candidateOffset == 7);

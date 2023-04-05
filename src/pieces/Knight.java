@@ -27,7 +27,7 @@ public class Knight extends Piece{
 	
 	//the set of integers that piece can move 
 	final int[] MOVE_CANDIDATES = {-17, -15, -10, -6, 6, 10, 15, 17};
-
+	
 
 	
 	/*
@@ -42,14 +42,10 @@ public class Knight extends Piece{
 		
 		//loops through the possible move integers
 		for(int currentMoveCandidate : MOVE_CANDIDATES) {
-
 			int coordinateToCheck = this.piecePos + currentMoveCandidate;
-
-
-
+			
 			//checking for edge cases
-			if(board.isValidCoord(coordinateToCheck))
-			{
+			if(board.isValidCoord(coordinateToCheck)) {
 				if(firstColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
 					secondColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
 					seventhColumnEdgeCheck(this.piecePos, currentMoveCandidate) ||
@@ -64,7 +60,7 @@ public class Knight extends Piece{
 				//if their is a piece on coordinate;
 				else if(board.getTile(coordinateToCheck).isTileOccupied()) {
 					Piece otherPiece = board.getTile(coordinateToCheck).getPiece();
-
+					
 					if(otherPiece.getPieceColor() != this.pieceColor) {
 						moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 					}
@@ -73,7 +69,7 @@ public class Knight extends Piece{
 		}
 		return moves;
 	}
-
+	
 	/*
 	 * checks to see if is in first column and move offsets that we can not move to 
 	 */
