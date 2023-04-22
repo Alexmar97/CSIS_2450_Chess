@@ -6,6 +6,9 @@ import java.util.List;
 
 import board.Board;
 import board.Move;
+import board.Move.AttackMove;
+import board.Move.KingCheckMove;
+import board.Move.NormalMove;
 import pieces.King;
 import pieces.Piece;
 import util.PieceColor;
@@ -58,6 +61,10 @@ public abstract class Player {
 		return this.legalMoves;
 	}
 	
+	public Collection<Move> getOpponentsMoves(){
+		return this.opponentMoves;
+	}
+	
 	/*
 	 * this gets the attack moves on a specific tile
 	 */
@@ -76,9 +83,32 @@ public abstract class Player {
 	 */
 	public boolean hasEscapeMoves() {
 		for(Move kingsMove : this.playerKing.calculateMoves(board)) {
+			if(kingsMove instanceof KingCheckMove) {
+				continue;
+			}
 			if(calculateAttacksOnTile(kingsMove.getDestinationCoordinate(), this.opponentMoves).isEmpty()) {
-				System.out.println("escape");
 				return true;
+			}
+		}
+		return false;
+	}
+	
+	public boolean hasBlockMoves() {
+		for(Piece piece : this.getActivePieces()) {
+			if(piece.getPieceType().isKing()) {
+				continue;
+			}
+			for(Move move : piece.calculateMoves(board)) {
+				if(!(move instanceof KingCheckMove)) {
+					if(piece.getPieceType().isPawn() && move instanceof NormalMove) {
+						Board testBoard = move.makeMove(board, piece, move.getDestinationCoordinate(), move.getAttackedPiece());
+						if(!testBoard.getCurrentPlayer().getOpponent().isInCheck()) {
+							System.out.println("true");
+							System.out.println(move.getDestinationCoordinate());
+							return true;
+						}
+					}
+				}
 			}
 		}
 		return false;
@@ -103,7 +133,7 @@ public abstract class Player {
 		return this.isInCheck;
 	}
 	public boolean isInCheckMate() {
-		return this.isInCheck && !hasEscapeMoves();
+		return this.isInCheck && !hasEscapeMoves() && !hasBlockMoves();
 	}
 	public boolean isInStaleMate() {
 		return !this.isInCheck && !hasEscapeMoves();
