@@ -3,6 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -24,9 +26,15 @@ import javax.swing.border.Border;
 
 import board.Board;
 import board.Move;
+import board.Move.AttackMove;
+import board.Move.KingCheckMove;
+import board.Move.NormalMove;
 import board.Tile;
 import pieces.*;
+import player.Player;
+import util.CountdownTimer;
 import util.PieceColor;
+import util.PieceType;
 
 /*
  * The Gui class is the main interactivity of the game and is what is interacted with
@@ -36,8 +44,11 @@ public class GUI {
 	public Board board;
 	public JFrame gameFrame;
 	public JPanel boardPanel;
-	JMenuBar menu;
+	public JMenuBar menu;
+	public JPanel messagePanel;
 	public PromotionPanel promotionPanel;
+	public Graphics graphics;
+	public Image image;
 
 	//Variables used when making the visuals
 	final Dimension FRAME_SIZE = new Dimension(800,800);
@@ -45,6 +56,8 @@ public class GUI {
 	Color darkTileColor = Color.decode("#593E1A");
 	Color lightTileColor = Color.decode("#FFFACD");
 	String defaultPieceImagesPath = "resources/pixel/";
+	CountdownTimer ct = new CountdownTimer();
+	Font  font1 = new Font("Arial", Font.PLAIN, 70);
 
 	//variables that we use when interacted with the board
 	public Tile sourceTile;
@@ -67,9 +80,13 @@ public class GUI {
 		this.gameFrame.setLayout(new BorderLayout());
 		this.gameFrame.setSize(FRAME_SIZE);
 		this.board = board;
+		
+		//TODO
+		//this.messagePanel = new MessagePanel();
+		//this.gameFrame.add(messagePanel, BorderLayout.NORTH);
 
 		//creating and adding the board panel
-		this.boardPanel = new BoardPanel();
+		this.boardPanel = new BoardPanel(/*(MessagePanel) messagePanel*/);
 		this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
 
 		//creating and adding menu bear
@@ -77,20 +94,181 @@ public class GUI {
 		this.gameFrame.setJMenuBar(menu);
 		this.gameFrame.setLocationRelativeTo(null);
 		this.gameFrame.setVisible(true);
+		gameFrame.pack();
 	}
 	
+	
+	public class MessagePanel extends JPanel{
+		Dimension size = new Dimension(800,100);
+		Dimension sizeTitle = new Dimension(800,800);
+		Dimension inGameSize = new Dimension(800,750);
+		JPanel titlePanel;
+		JPanel innerMessagePanel;
+		JLabel whiteTimer = ct.whiteCounterLabel;
+		
+		
+		MessagePanel(){
+			//createTitlePanel();
+			//this.add(titlePanel);
+			setPreferredSize(sizeTitle);;
+			//gameFrame.setLocationRelativeTo(null);
+			//gameFrame.pack();
+		}
+	/*
+		public void createTitlePanel() {
+			titlePanel = new JPanel();
+			titlePanel.setBackground(new Color(222, 206, 129));
+			titlePanel.setLayout(null);
+			titlePanel.setPreferredSize(sizeTitle);
+			
+			String text = "CheckMate Champions";
+			JLabel jl = new JLabel(text);
+			jl.setFont(new Font("consolas", Font.PLAIN, 70));
+			jl.setForeground(Color.black);
+			jl.setBounds(10, 200, 800, 100);
+			titlePanel.add(jl);
+			
+			JButton jb = new JButton();
+			jb.setText("Play");
+			jb.setFont(new Font("consolas", Font.PLAIN, 45));
+			jb.setBounds(300, 350, 200, 60);
+			jb.addActionListener(new ActionListener() {
 
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					createInGameMessage();
+					
+				}
+				
+			});
+			titlePanel.add(jb);
+		}
+		
+		
+		public void createInGameMessage() {
+			innerMessagePanel = new JPanel();
+			innerMessagePanel.setBackground(Color.black);
+			innerMessagePanel.setLayout(null);
+			innerMessagePanel.setPreferredSize(inGameSize);
+			
+			String text = "Whites Turn";
+			JLabel jl = new JLabel(text);
+			jl.setFont(new Font("consolas", Font.PLAIN, 60));
+			jl.setForeground(Color.white);
+			jl.setBounds(0, 0, 400, 100);
+			innerMessagePanel.add(jl);
+			//titlePanel.disable();
+			messagePanel.remove(titlePanel);	
+			messagePanel.add(innerMessagePanel);
+		}*/
+		
+
+		public void drawMessage(Graphics g) {
+			repaint();
+			//validate();
+			if(board.gameState == 0) {
+				drawTitle(g);
+			}else {
+				getMessage(g);
+			}
+		}
+		
+		public void drawTitle(Graphics g) {
+			
+			setBackground(new Color(222, 206, 129));
+			setLayout(null);
+			
+			
+			JButton jb = new JButton();
+			jb.setText("Play");
+			jb.setFont(new Font("consolas", Font.PLAIN, 45));
+			jb.setBounds(300, 450, 200, 60);
+			jb.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					board.gameState = 1;
+					boardPanel.setPreferredSize(inGameSize);
+					
+				}
+				
+			});
+			add(jb);
+			
+			
+			g.setColor(Color.black);
+			g.setFont(new Font("consolas", Font.PLAIN, 70));
+			String text = "CheckMate Champions";
+			int width = (int)g.getFontMetrics().getStringBounds(text, g).getWidth();
+			int x = (size.width - width)/2;
+			g.drawString(text, x, 300);
+			text = "Chess";
+			width = (int)g.getFontMetrics().getStringBounds(text, g).getWidth();
+			x = (size.width - width)/2;
+			g.drawString(text, x, 400);
+			
+			g.fillRect(x, 450, width, 60);
+			g.setColor(new Color(222, 206, 129));
+			g.fillRect(x+5, 450+5, width-10, 60-10);
+			
+			g.setColor(Color.black);
+			g.setFont(new Font("consolas", Font.PLAIN, 50));
+			text = "Play";
+			width = (int)g.getFontMetrics().getStringBounds(text, g).getWidth();
+			x = (size.width - width)/2;
+			g.drawString(text, x, 500);
+		}
+		
+		
+
+		public void getMessage(Graphics g) {
+			setPreferredSize(size);
+			setLayout(null);
+			whiteTimer.setForeground(Color.white);
+			gameFrame.pack();
+			if(board.getCurrentPlayer().getTeam() == PieceColor.BLACK) {
+				this.setBackground(Color.white);
+				g.setColor(Color.black);
+				g.setFont(new Font("consolas", Font.PLAIN, 60));
+				String text = "Blacks Turn";
+				int width = (int)g.getFontMetrics().getStringBounds(text, g).getWidth();
+				int x = (size.width - width)/2;
+				g.drawString(text, x, 70);
+			}else {
+				this.setBackground(Color.black);
+				g.setColor(Color.white);
+				g.setFont(new Font("consolas", Font.PLAIN, 60));
+				String text = "Whites Turn";
+				int width = (int)g.getFontMetrics().getStringBounds(text, g).getWidth();
+				int x = (size.width - width)/2;
+				g.drawString(text, x, 70);
+			}
+		}
+		
+
+		public void paintComponent(Graphics g) {
+			image = createImage(getWidth(), getHeight());
+			graphics = image.getGraphics();
+			drawMessage(g);
+			graphics.drawImage(image, 0, 0, this);
+			
+			repaint();
+			//validate();
+		}
+	}
+	
 
 	/*
 	 * Board panel is the list of all the separate tile panels to display as one
 	 */
 	public class BoardPanel extends JPanel{
 		public final List<TilePanel> boardTiles;
+		//MessagePanel messagePanel;
 
 		/*
 		 * constructor creates and adds all the tile panels
 		 */
-		BoardPanel(){
+		BoardPanel(/*MessagePanel messagePanel*/){
 			super(new GridLayout(8,8));
 			this.boardTiles = new ArrayList<>();
 			for(int i = 0; i < Board.NUM_TILES; i++) {
@@ -98,8 +276,9 @@ public class GUI {
 				this.boardTiles.add(tilePanel);
 				add(tilePanel);
 			}
+			//this.messagePanel = messagePanel;
+			//setPreferredSize(new Dimension(0,0));
 			setPreferredSize(FRAME_SIZE);
-			validate();
 		}
 
 		/*
@@ -111,8 +290,10 @@ public class GUI {
 				tilePanel.drawTile(board);
 				add(tilePanel);
 			}
+			//messagePanel.drawMessage(graphics);
 			validate();
 			repaint();
+			
 		}
 	}
 	
@@ -207,7 +388,6 @@ public class GUI {
 				public void mouseClicked(MouseEvent e) {
 					//if right is clicked
 					if(SwingUtilities.isRightMouseButton(e)) {
-						System.out.println("Right click");
 						sourceTile = null;
 						selectedPiece = null;
 						destinationTile = null;
@@ -224,7 +404,6 @@ public class GUI {
 
 							if(selectedPiece.toString().equals("P"))
 							{
-								System.out.println("PAWN SELECETD!");
 								activePawn = (Pawn)selectedPiece;
 
 							}
@@ -233,13 +412,13 @@ public class GUI {
 								sourceTile = null;
 								selectedPiece = null;
 								activePawn = null;
-								System.out.println("No piece selected");
 							}
 						}else {
 							destinationTile = board.getTile(tileId);
+							Collection<Move> toMove = pieceLegalMoves(board);
 
 							if(destinationTile != null) {
-								for(Move move : pieceLegalMoves(board)) {
+								for(Move move : toMove) {
 									if(destinationTile.getTileCoord() == move.getDestinationCoordinate()) {
 										//making move
 										board = move.makeMove(board, selectedPiece, destinationTile.getTileCoord(), destinationTile.getPiece());
@@ -251,8 +430,6 @@ public class GUI {
 												System.out.println("FINISH LINE");
 												movedActivePawn = move;
 												PromotionFrame pf = new PromotionFrame(activePawn.getPieceColor(), boardPanel);
-											
-											//break;
 											}		 
 										}
 
@@ -374,15 +551,55 @@ public class GUI {
 						this.setBackground(new Color(237,78,78,100));
 					}
 				}
+				if(move.getCurrentCoordinate() == this.tileId) {
+					this.setBackground(new Color(252, 250, 131));
+				}
 			}
 		}
 
+		
 		/*
 		 * grabs the selected boards legal moves
 		 */
 		public Collection<Move> pieceLegalMoves(Board board){
 			if(selectedPiece != null) {
-				return selectedPiece.calculateMoves(board);
+				List<Move> newMoves = new ArrayList<>();
+				if(selectedPiece.getPieceType().isKing()) {
+					for(Move move: selectedPiece.calculateMoves(board)) {
+						boolean canMove = true;
+						
+						for(Move opponentMove: board.getCurrentPlayer().getOpponentsMoves()) {
+							if(opponentMove.getMovedPiece().getPieceType().isPawn() && opponentMove instanceof NormalMove) {
+								continue;
+							}
+							else if(move.getDestinationCoordinate() == opponentMove.getDestinationCoordinate()){
+								canMove = false;
+							}
+						}
+						if(canMove) {
+							if(!(move instanceof KingCheckMove)) {
+								newMoves.add(move);
+							}
+						}
+					}
+					return newMoves;
+				}else {
+					if(board.getCurrentPlayer().isInCheck()) {
+						for(Move move : selectedPiece.calculateMoves(board)) {
+							Board testBoard = move.makeMove(board, selectedPiece, move.getDestinationCoordinate(), move.getAttackedPiece());
+							if(!testBoard.getCurrentPlayer().getOpponent().isInCheck()) {
+								newMoves.add(move);
+							}
+						}
+					}else {
+						for(Move move : selectedPiece.calculateMoves(board)) {
+							if(!(move instanceof KingCheckMove)) {
+								newMoves.add(move);
+							}
+						}
+					}
+					return newMoves;
+				}
 			}
 			return Collections.emptyList();
 		}
@@ -406,6 +623,8 @@ public class GUI {
 		}
 
 	}
+	
+	//END OF TILE PANEL
 	
 	
 	
