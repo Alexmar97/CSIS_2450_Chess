@@ -80,13 +80,17 @@ public class Queen extends Piece{
 							{
 								moves.add(new AttackMove(board, this, coordinateToCheck, otherPiece));
 							}
-							behindPiece = true;
+							if(otherPiece.getPieceColor() == this.pieceColor) {
+								moves.add(new KingCheckMove(board, this, coordinateToCheck));
+							}
+							if(otherPiece.getPieceType().isKing() && otherPiece.getPieceColor() != this.pieceColor) {
+								behindPiece = true;
+							}
+							if(!behindPiece) {
+								break;
+							}
 						}
 
-
-						//adds to the next move to check
-						//{+1 +1 +1 +1 ....}
-						//{+8 +8 +8 +8...}
 						coordinateToCheck += currentMoveCandidate;
 					}
 					behindPiece = false;
