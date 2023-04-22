@@ -17,11 +17,13 @@ import player.BlackPlayer;
 import player.Player;
 import player.WhitePlayer;
 import util.PieceColor;
+import util.PieceType;
 
 public class Board {
 
 	//the list of tiles the board is constructed of
 	public List<Tile> gameBoard;
+	public int gameState = 0;
 	
 	//TODO collection of each pieces currently not being used
 	Collection<Piece> whitePieces;
@@ -34,7 +36,7 @@ public class Board {
 	WhitePlayer whitePlayer;
 	BlackPlayer blackPlayer;
 	
-	private Player currentPlayer;
+	public Player currentPlayer;
 	
 	private String message;
 	
@@ -66,8 +68,8 @@ public class Board {
 	 * to get the full board
 	 */
 	public Board() {
-		//createDefaultLayout();
-		createMoveExampleBoard();
+		createDefaultLayout();
+		//createMoveExampleBoard();
 		this.gameBoard = createGameBoard();
 		this.whitePieces = getWhiteActivePieces(gameBoard);
 		this.blackPieces = getBlackActivePieces(gameBoard);
@@ -172,19 +174,31 @@ public class Board {
 	 * setting some random pieces to test move functionality
 	 */
 	public void createMoveExampleBoard() {
+		
+		/*
 		setPiece(new Rook(27, PieceColor.BLACK));
 		setPiece(new Pawn(17, PieceColor.WHITE));
-		setPiece(new Pawn(49, PieceColor.WHITE));
 		setPiece(new Pawn(34, PieceColor.WHITE));
 		setPiece(new Knight(36, PieceColor.BLACK));
 		setPiece(new Knight(40, PieceColor.BLACK));
 		setPiece(new Bishop(47, PieceColor.BLACK));
 		setPiece(new Pawn(10, PieceColor.BLACK));
 		setPiece(new King(33, PieceColor.BLACK));
-		setPiece(new King(1, PieceColor.WHITE));
-		setPiece(new Queen(54, PieceColor.BLACK));
+		setPiece(new King(49, PieceColor.WHITE));
+		//setPiece(new Queen(54, PieceColor.BLACK));
 		setPiece(new Rook(63, PieceColor.BLACK));
 		setPiece(new Pawn(15, PieceColor.BLACK));
+		setPiece(new Pawn(12, PieceColor.WHITE));
+		setPiece(new Pawn(52, PieceColor.BLACK));
+		*/
+		
+		
+		
+		setPiece(new King(3, PieceColor.BLACK));
+		setPiece(new Rook(27, PieceColor.BLACK));
+		setPiece(new King(25, PieceColor.WHITE));
+		setPiece(new Queen(58, PieceColor.WHITE));
+		setPiece(new Pawn(36, PieceColor.BLACK));
 	}
 	
 	/*

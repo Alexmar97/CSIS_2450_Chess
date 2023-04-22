@@ -86,6 +86,7 @@ public abstract class Move {
 		}else {
 			newBoard.currentPlayer = newBoard.whitePlayer();
 		}
+		newBoard.gameState = 1;
 		return newBoard;
 	}
 	
