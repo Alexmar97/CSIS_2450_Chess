@@ -17,11 +17,11 @@ public class CountdownTimer implements ActionListener{
 	public JLabel whiteCounterLabel;
 	public JLabel blackCounterLabel;
 	JButton btn;
-	Font  font1 = new Font("Arial", Font.PLAIN, 70);
+	Font  font1 = new Font("consolas", Font.PLAIN, 50);
 	Font  font2 = new Font("Arial", Font.PLAIN, 30);
 	
-	Timer whiteTimer;
-	Timer blackTimer;
+	public Timer whiteTimer;
+	public Timer blackTimer;
 	int whiteSecond;
 	int whiteMinute;
 	int blackSecond;
@@ -53,13 +53,14 @@ public class CountdownTimer implements ActionListener{
 		whiteCounterLabel = new JLabel("");
 		//whiteCounterLabel.setBounds(50, 230, 200, 100);
 		//whiteCounterLabel.setHorizontalAlignment(JLabel.CENTER);
+		//whiteCounterLabel.setVerticalAlignment(JLabel.CENTER);
 		whiteCounterLabel.setFont(font1);
-		whiteCounterLabel.setForeground(new Color(222, 206, 129));
 		
 		//creating black timer label
 		blackCounterLabel = new JLabel("");
-		blackCounterLabel.setBounds(550, 230, 200, 100);
-		blackCounterLabel.setHorizontalAlignment(JLabel.CENTER);
+		//blackCounterLabel.setBounds(550, 230, 200, 100);
+		//blackCounterLabel.setHorizontalAlignment(JLabel.CENTER);
+		//blackCounterLabel.setVerticalAlignment(JLabel.CENTER);
 		blackCounterLabel.setFont(font1);
 		
 		//creating end turn button
@@ -189,6 +190,23 @@ public class CountdownTimer implements ActionListener{
 			}
 		}
 		
+	}
+	
+	public void updateTimer() {
+		buttonCount++;
+		System.out.println("button pressed");
+		if(buttonCount == 0) {
+			blackTimer.stop();
+			whiteTimer.start();
+		}
+		if(buttonCount % 2 == 0) {
+			blackTimer.stop();
+			whiteTimer.start();
+		}
+		else {
+			whiteTimer.stop();
+			blackTimer.start();
+		}
 	}
 
 }
