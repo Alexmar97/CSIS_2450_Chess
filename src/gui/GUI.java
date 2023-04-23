@@ -23,6 +23,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.plaf.TextUI;
 
 import board.Board;
 import board.Move;
@@ -46,6 +47,7 @@ public class GUI {
 	public JPanel boardPanel;
 	public JMenuBar menu;
 	public JPanel messagePanel;
+	public JPanel displayedContent;
 	public PromotionPanel promotionPanel;
 	public Graphics graphics;
 	public Image image;
@@ -81,13 +83,22 @@ public class GUI {
 		this.gameFrame.setSize(FRAME_SIZE);
 		this.board = board;
 		
+		//creating the message panel
 		this.messagePanel = new MessagePanel();
-		this.gameFrame.add(messagePanel, BorderLayout.NORTH);
+		//this.gameFrame.add(messagePanel, BorderLayout.NORTH);
 
 		//creating and adding the board panel
-		this.boardPanel = new BoardPanel((MessagePanel) messagePanel);
-		this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
+		this.boardPanel = new BoardPanel(/*(MessagePanel) messagePanel*/);
+		//this.gameFrame.add(this.boardPanel, BorderLayout.CENTER);
 
+		//setting displayed content to message panel
+		displayedContent = new JPanel();
+		displayedContent.setSize(FRAME_SIZE);
+		displayedContent.setLayout(new BorderLayout());
+		displayedContent.add(messagePanel, BorderLayout.NORTH);
+		this.gameFrame.add(displayedContent);
+
+		
 		//creating and adding menu bear
 		this.menu = createTableMenuBar();
 		this.gameFrame.setJMenuBar(menu);
@@ -100,20 +111,22 @@ public class GUI {
 	public class MessagePanel extends JPanel{
 		Dimension size = new Dimension(800,100);
 		Dimension sizeTitle = new Dimension(800,800);
-		Dimension inGameSize = new Dimension(800,750);
+		Dimension inGameSize = new Dimension(800,150);
 		JPanel titlePanel;
-		JPanel innerMessagePanel;
-		JLabel whiteTimer = ct.whiteCounterLabel;
+		public JPanel innerMessagePanel;
+		public JLabel whiteTimer = ct.whiteCounterLabel;
+		public JLabel blackTimer = ct.blackCounterLabel;
+		public JLabel jl;
 		
 		
 		MessagePanel(){
-			//createTitlePanel();
-			//this.add(titlePanel);
-			setPreferredSize(sizeTitle);;
+			createTitlePanel();
+			this.add(titlePanel);
+			//setPreferredSize(sizeTitle);;
 			//gameFrame.setLocationRelativeTo(null);
 			//gameFrame.pack();
 		}
-	/*
+	
 		public void createTitlePanel() {
 			titlePanel = new JPanel();
 			titlePanel.setBackground(new Color(222, 206, 129));
@@ -122,21 +135,28 @@ public class GUI {
 			
 			String text = "CheckMate Champions";
 			JLabel jl = new JLabel(text);
-			jl.setFont(new Font("consolas", Font.PLAIN, 70));
+			jl.setFont(new Font("consolas", Font.BOLD, 70));
 			jl.setForeground(Color.black);
-			jl.setBounds(10, 200, 800, 100);
+			jl.setBounds(30, 200, 800, 100);
 			titlePanel.add(jl);
+			
+			String text2 = "Chess";
+			JLabel jl2 = new JLabel(text2);
+			jl2.setFont(new Font("consolas", Font.BOLD, 70));
+			jl2.setForeground(Color.black);
+			jl2.setBounds(300, 260, 800, 100);
+			titlePanel.add(jl2);
 			
 			JButton jb = new JButton();
 			jb.setText("Play");
 			jb.setFont(new Font("consolas", Font.PLAIN, 45));
-			jb.setBounds(300, 350, 200, 60);
+			jb.setBounds(295, 350, 200, 60);
 			jb.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					createInGameMessage();
-					
+					ct.whiteTimer.start();
 				}
 				
 			});
@@ -146,22 +166,55 @@ public class GUI {
 		
 		public void createInGameMessage() {
 			innerMessagePanel = new JPanel();
-			innerMessagePanel.setBackground(Color.black);
+			innerMessagePanel.setBackground(getMessageColors());
 			innerMessagePanel.setLayout(null);
 			innerMessagePanel.setPreferredSize(inGameSize);
 			
-			String text = "Whites Turn";
-			JLabel jl = new JLabel(text);
+			String text = getMessageText();
+			jl = new JLabel(text);
 			jl.setFont(new Font("consolas", Font.PLAIN, 60));
-			jl.setForeground(Color.white);
-			jl.setBounds(0, 0, 400, 100);
+			jl.setForeground((getMessageColors() == Color.WHITE) ? Color.BLACK : Color.WHITE);
+			jl.setBounds(205, 0, 400, 150);
 			innerMessagePanel.add(jl);
-			//titlePanel.disable();
-			messagePanel.remove(titlePanel);	
+			
+			blackTimer.setForeground((getMessageColors() == Color.WHITE) ? Color.BLACK : Color.WHITE);
+			blackTimer.setBounds(25, 50, 140, 55);
+			innerMessagePanel.add(blackTimer);
+			
+			whiteTimer.setForeground((getMessageColors() == Color.WHITE) ? Color.BLACK : Color.WHITE);
+			whiteTimer.setBounds(635, 50, 140, 55);
+			innerMessagePanel.add(whiteTimer);
+			
+			messagePanel.remove(titlePanel);
+			messagePanel.setPreferredSize(inGameSize);
 			messagePanel.add(innerMessagePanel);
-		}*/
+			displayedContent.add(boardPanel, BorderLayout.CENTER);
+			gameFrame.pack();
+		}
 		
-
+		public void updateInGameMessage() {
+			innerMessagePanel.setBackground(getMessageColors());
+			innerMessagePanel.getComponent(0).setForeground((getMessageColors() == Color.WHITE) ? Color.BLACK : Color.WHITE);
+			jl.setText(getMessageText());	
+			blackTimer.setForeground((getMessageColors() == Color.WHITE) ? Color.BLACK : Color.WHITE);
+			whiteTimer.setForeground((getMessageColors() == Color.WHITE) ? Color.BLACK : Color.WHITE);
+		}
+		
+		public Color getMessageColors() {
+			if(board.getCurrentPlayer().getTeam() == PieceColor.WHITE) {
+				return Color.WHITE;
+			}
+			return Color.BLACK;
+		}
+		
+		public String getMessageText() {
+			if(board.getCurrentPlayer().getTeam() == PieceColor.WHITE) {
+				return "White's Turn";
+			}
+			return "Black's Turn";
+		}
+		
+		/*
 		public void drawMessage(Graphics g) {
 			repaint();
 			//validate();
@@ -248,12 +301,10 @@ public class GUI {
 		public void paintComponent(Graphics g) {
 			image = createImage(getWidth(), getHeight());
 			graphics = image.getGraphics();
-			drawMessage(g);
-			graphics.drawImage(image, 0, 0, this);
-			
+			graphics.drawImage(image, 0, 0, this);	
 			repaint();
-			//validate();
 		}
+		*/
 	}
 	
 
@@ -262,12 +313,12 @@ public class GUI {
 	 */
 	public class BoardPanel extends JPanel{
 		public final List<TilePanel> boardTiles;
-		MessagePanel messagePanel;
+		//MessagePanel messagePanel;
 
 		/*
 		 * constructor creates and adds all the tile panels
 		 */
-		BoardPanel(MessagePanel messagePanel){
+		BoardPanel(/*MessagePanel messagePanel*/){
 			super(new GridLayout(8,8));
 			this.boardTiles = new ArrayList<>();
 			for(int i = 0; i < Board.NUM_TILES; i++) {
@@ -275,8 +326,9 @@ public class GUI {
 				this.boardTiles.add(tilePanel);
 				add(tilePanel);
 			}
-			this.messagePanel = messagePanel;
-			setPreferredSize(new Dimension(0,0));
+			//this.messagePanel = messagePanel;
+			//setPreferredSize(new Dimension(0,0));
+			setPreferredSize(FRAME_SIZE);
 		}
 
 		/*
@@ -288,7 +340,9 @@ public class GUI {
 				tilePanel.drawTile(board);
 				add(tilePanel);
 			}
-			messagePanel.drawMessage(graphics);
+			((MessagePanel) messagePanel).updateInGameMessage();
+			gameFrame.pack();
+			validate();
 			repaint();
 			
 		}
@@ -419,7 +473,7 @@ public class GUI {
 									if(destinationTile.getTileCoord() == move.getDestinationCoordinate()) {
 										//making move
 										board = move.makeMove(board, selectedPiece, destinationTile.getTileCoord(), destinationTile.getPiece());
-
+										ct.updateTimer();
 										
 										if(activePawn != null) {
 											if(activePawn.eigthRankEdgeCheck(destinationTile.getTileCoord()) || activePawn.firstRankEdgeCheck(destinationTile.getTileCoord()))
